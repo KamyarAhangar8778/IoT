@@ -1,0 +1,14 @@
+{
+  "name": "achaemenid-iot",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "DASHBOARD"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=DASHBOARD",
+    "build": "npm run build --workspace=DASHBOARD",
+    "lint": "npm run lint --workspace=DASHBOARD",
+    "start": "npm run start --workspace=DASHBOARD"
+  }
+}
