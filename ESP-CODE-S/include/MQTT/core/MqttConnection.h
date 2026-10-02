@@ -168,8 +168,14 @@ private:
 
     void onData(const uint8_t* data, size_t len) {
         keepalive_.activity(millis());
-        if (parser_.onData(data, len, topic_buf_, cfg_.max_topic_length)) {
-            handleParsed();
+        size_t pos = 0;
+        while (pos < len) {
+            if (parser_.onData(data, len, pos, topic_buf_, cfg_.max_topic_length)) {
+                handleParsed();
+                parser_.reset();
+            } else {
+                break;
+            }
         }
     }
 
@@ -214,7 +220,7 @@ private:
                 break;
             }
             case PacketType::SUBACK:
-                // correlation via packet_id already stored in subs_
+                Serial.printf("[MQTT] SUBACK confirmed by broker! (packet_id: %u)\n", p.packet_id);
                 break;
             case PacketType::UNSUBACK:
                 break;
@@ -237,7 +243,6 @@ private:
             default:
                 break;
         }
-        parser_.reset();
     }
 
     void sendPing(uint32_t now_ms) {

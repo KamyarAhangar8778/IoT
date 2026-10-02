@@ -35,6 +35,12 @@ void AchaemenidMQTT::begin(const String& server, uint16_t port, const String& ba
     _config.willTopic = (baseTopic + "/Status").c_str();
     _config.commandTopic = (baseTopic + "/Command").c_str();
     
+    if (_config.clientId.empty() || _config.clientId == "ESP32-" || _config.clientId == "ESP32-000000000000") {
+        String mac = WiFi.macAddress();
+        mac.replace(":", "");
+        _config.clientId = ("ESP32-" + mac).c_str();
+    }
+    
     _mqttClient.setServer(_config.server.c_str(), _config.port);
     _mqttClient.setClientId(_config.clientId.c_str());
 

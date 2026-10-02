@@ -29,7 +29,12 @@ int apply(const ParseResult& config, PinManager* pinManager) {
             applied++;
             INFOF("[ConfigApplier] Pin %d registered (id=%s, value=%d)", seg.pin, seg.id, seg.value);
         } else {
-            WARNINGF("[ConfigApplier] Failed to register pin %d (id=%s)", seg.pin, seg.id);
+            // Segment already exists (e.g. from offline NVS boot) -> update state, auto-off & rules
+            pinManager->updateSegmentRule(seg.id, seg.rule);
+            pinManager->setAutoOffDelayByPin(seg.pin, seg.autoOffDelay);
+            pinManager->setPinState(seg.pin, seg.value);
+            applied++;
+            INFOF("[ConfigApplier] Pin %d updated (id=%s, value=%d)", seg.pin, seg.id, seg.value);
         }
     }
 

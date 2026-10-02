@@ -107,13 +107,19 @@ void loadNetworkConfig(String ssid[MAX_WIFI_NETWORKS], String pass[MAX_WIFI_NETW
         int port = prefs.getInt("mqPort", 1883);
         int qos = prefs.getInt("mqQos", 1);
         
-        strncpy(mqttConfig.host, host.c_str(), sizeof(mqttConfig.host) - 1);
-        strncpy(mqttConfig.baseTopic, topic.c_str(), sizeof(mqttConfig.baseTopic) - 1);
-        mqttConfig.port = port;
-        mqttConfig.qos = qos;
-        mqttConfig.valid = true;
-        
-        INFOF("[NetworkStorage] [DEBUG] Stored MQTT Config - Host: '%s', Port: %d, Topic: '%s', QOS: %d", mqttConfig.host, mqttConfig.port, mqttConfig.baseTopic, mqttConfig.qos);
+        if (host.length() > 0 && topic.length() > 0) {
+            strncpy(mqttConfig.host, host.c_str(), sizeof(mqttConfig.host) - 1);
+            mqttConfig.host[sizeof(mqttConfig.host) - 1] = '\0';
+            strncpy(mqttConfig.baseTopic, topic.c_str(), sizeof(mqttConfig.baseTopic) - 1);
+            mqttConfig.baseTopic[sizeof(mqttConfig.baseTopic) - 1] = '\0';
+            mqttConfig.port = port > 0 ? port : 1883;
+            mqttConfig.qos = qos;
+            mqttConfig.valid = true;
+            INFOF("[NetworkStorage] [DEBUG] Stored MQTT Config - Host: '%s', Port: %d, Topic: '%s', QOS: %d", mqttConfig.host, mqttConfig.port, mqttConfig.baseTopic, mqttConfig.qos);
+        } else {
+            mqttConfig.valid = false;
+            INFO("[NetworkStorage] [DEBUG] Incomplete MQTT config stored in NVS, ignored.");
+        }
     } else {
         mqttConfig.valid = false;
         INFO("[NetworkStorage] [DEBUG] No valid MQTT config stored.");

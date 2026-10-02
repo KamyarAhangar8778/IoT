@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <cstdint>
 #include <cstddef>
@@ -64,11 +64,11 @@ public:
     /**
      * @brief Feed RX bytes into the parser.
      * @param topic_buf Topic accumulation buffer (>= max_topic+1 bytes).
+     * @param pos Current byte offset in data, updated as bytes are parsed.
      * @return true when a complete packet has been parsed (check parsed()).
      */
-    HOT_PATH FORCE_INLINE bool onData(const uint8_t* data, size_t len,
+    HOT_PATH FORCE_INLINE bool onData(const uint8_t* data, size_t len, size_t& pos,
                                       char* topic_buf, uint16_t max_topic) {
-        size_t pos = 0;
         while (pos < len) {
             switch (state_) {
                 case ParseState::FIXED_HEADER: {

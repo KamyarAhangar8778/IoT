@@ -33,6 +33,24 @@ export async function handlePins(
 				return (stub as any).setState({ value: action.state });
 			}));
 
+			// برودکست تغییرات گروهی پین‌ها به سخت‌افزار ESP32 از طریق WebSocket
+			try {
+				const autoStub = env.MY_DURABLE_OBJECT.get(
+					env.MY_DURABLE_OBJECT.idFromName("automations_controller")
+				);
+				const count = Math.min(body.actions.length, 255);
+				const payload = new Uint8Array(2 + count * 2);
+				payload[0] = 0x08;
+				payload[1] = count;
+				for (let i = 0; i < count; i++) {
+					payload[2 + i * 2] = parseInt(body.actions[i].pin, 10) & 0xff;
+					payload[3 + i * 2] = body.actions[i].state ? 1 : 0;
+				}
+				await (autoStub as any).testBroadcast(payload);
+			} catch (e) {
+				console.error("Failed to broadcast batch pins to ESP32 over WS", e);
+			}
+
 			return jsonResponse({
 				ack: true,
 				message: `وضعیت ${body.actions.length} پین با موفقیت به‌روزرسانی شد.`,
@@ -57,7 +75,20 @@ export async function handlePins(
 				return jsonResponse({ ack: false, error: "Invalid body, 'value' must be boolean" }, 400);
 			}
 
-			const result = await (stub as any).setState({ value: body.value });
+			const boolVal = body.value === true;
+			const result = await (stub as any).setState({ value: boolVal });
+
+			// برودکست فوری تغییر وضعیت پین به ESP32 از طریق وب‌سوکت دائمی کلادفلر
+			try {
+				const autoStub = env.MY_DURABLE_OBJECT.get(
+					env.MY_DURABLE_OBJECT.idFromName("automations_controller")
+				);
+				const payload = new Uint8Array([0x06, parseInt(pinId, 10) & 0xff, boolVal ? 1 : 0]);
+				await (autoStub as any).testBroadcast(payload);
+			} catch (e) {
+				console.error("Failed to broadcast pin change to ESP32 over WS", e);
+			}
+
 			return jsonResponse({
 				ack: true,
 				message: `وضعیت پین ${pinId} با موفقیت ذخیره شد.`,

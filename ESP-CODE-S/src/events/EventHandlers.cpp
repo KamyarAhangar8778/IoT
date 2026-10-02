@@ -239,6 +239,15 @@ auto onConfigPayloadReceived = [](ConfigPayloadReceivedEvent* evt) {
     }
 };
 
+/**
+ * @brief Listener: Handles dashboard presence changes.
+ */
+auto onDashboardPresence = [](DashboardPresenceEvent* evt) {
+    if (evt == nullptr) return;
+    isDashboardOnline = evt->isOnline;
+    INFOF("[Dashboard] Presence updated: %s", evt->isOnline ? "ONLINE" : "OFFLINE");
+};
+
 void setupEventBus() {
     // Register all event listeners
     eventBus.on<PinStateChangeRequestEvent>(onPinChangeRequest);
@@ -250,4 +259,5 @@ void setupEventBus() {
     eventBus.on<NetworkStatusEvent>(onNetworkStatus);
     eventBus.on<CloudSyncRequestEvent>(onCloudSyncRequest);
     eventBus.on<ConfigPayloadReceivedEvent>(onConfigPayloadReceived);
+    eventBus.on<DashboardPresenceEvent>(onDashboardPresence);
 }

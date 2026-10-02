@@ -50,7 +50,9 @@ export async function buildEspConfigText(env: Env, value: string | null): Promis
 	const pinStates = await Promise.all(
 		segments.map(async (seg) => {
 			try {
-				const stub = env.MY_DURABLE_OBJECT.getByName("pin_" + seg.pin);
+				const stub = (env.MY_DURABLE_OBJECT as any).getByName
+					? (env.MY_DURABLE_OBJECT as any).getByName("pin_" + seg.pin)
+					: env.MY_DURABLE_OBJECT.get(env.MY_DURABLE_OBJECT.idFromName("pin_" + seg.pin));
 				return (await (stub as any).getState()) as { value?: boolean };
 			} catch {
 				return {} as { value?: boolean };

@@ -67,7 +67,8 @@ export class MyDurableObject extends DurableObject {
 									this.env.MY_DURABLE_OBJECT.idFromName("pin_" + seg.pin)
 								);
 								const state = await (stub as any).getState();
-								states[String(seg.pin)] = state?.value === true;
+								const val = state?.value;
+								states[String(seg.pin)] = val === true || val === 1 || val === "true" || val === "1";
 							}
 						} catch {}
 					})
@@ -85,11 +86,12 @@ export class MyDurableObject extends DurableObject {
 				const states = (data as any).states;
 				if (states && typeof states === "object") {
 					for (const [pinStr, stateVal] of Object.entries(states)) {
+						const boolVal = stateVal === true || stateVal === 1 || stateVal === "true" || stateVal === "1";
 						const pinDo = this.env.MY_DURABLE_OBJECT.get(
 							this.env.MY_DURABLE_OBJECT.idFromName("pin_" + pinStr)
 						);
 						this.ctx.waitUntil(
-							(pinDo as any).setState({ value: stateVal === true })
+							(pinDo as any).setState({ value: boolVal })
 						);
 					}
 				}
@@ -116,12 +118,14 @@ export class MyDurableObject extends DurableObject {
 			if (data.type !== "sync_pin") return;
 
 			// به‌روزرسانی DO مربوط به پین از طریق RPC مستقیم
+			const rawVal = data.state;
+			const boolVal = rawVal === true || rawVal === 1 || rawVal === "true" || rawVal === "1";
 			const pinDo = this.env.MY_DURABLE_OBJECT.get(
 				this.env.MY_DURABLE_OBJECT.idFromName("pin_" + data.pin)
 			);
 			// fire-and-forget: اجرای متد با RPC بدون overhead شبکه داخلی
 			this.ctx.waitUntil(
-				(pinDo as any).setState({ value: data.state })
+				(pinDo as any).setState({ value: boolVal })
 			);
 		} catch (e) {
 			console.error("WS parse error", e);
