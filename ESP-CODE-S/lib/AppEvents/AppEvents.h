@@ -110,6 +110,16 @@ struct NetworkStatusEvent {
 };
 
 /**
+ * @struct ConfigPayloadReceivedEvent
+ * @brief Dispatched when raw ESP_CFG_V2 text arrives via WebSocket or other stream.
+ */
+struct ConfigPayloadReceivedEvent {
+    static constexpr const char* Name = "config.payload_received";
+    const char* payload;
+    ConfigPayloadReceivedEvent(const char* p) : payload(p) {}
+};
+
+/**
  * @struct DashboardPresenceEvent
  * @brief Dispatched when the dashboard announces its presence.
  */

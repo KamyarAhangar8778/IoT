@@ -3,9 +3,13 @@
 #include <AppEvents.h>
 #include <Utilities/logging.h>
 #include <setup/NetworkStorage.h>
+#include <setup/FallbackAP.h>
 #include <core/WebSocketServer.h>
 #include <core/WebSocketClient.h>
 #include <AchaemenidMQTT.h>
+#include <AchaemenidConfigProtocol.h>
+#include <ConfigApplier.h>
+#include <ISegmentStorage.h>
 
 /**
  * @brief Listener: Handles requested pin state changes (e.g. from MQTT).
@@ -188,6 +192,50 @@ auto onNetworkStatus = [](NetworkStatusEvent* evt) {
         appTimer->setTimeout([]() {
             mqttClient.connect();
         }, 2000);
+    } else {
+#if ENABLE_FALLBACK_AP
+        INFO("[Network] WiFi failed to connect. Activating Fallback Access Point...");
+        uniuno::FallbackAP::start();
+#else
+        ERROR("[Network] Fallback AP disabled. Restarting in 5s...");
+        if (appTimer) {
+            appTimer->setTimeout([]() { ESP.restart(); }, 5000);
+        } else {
+            delay(5000);
+            ESP.restart();
+        }
+#endif
+    }
+};
+
+/**
+ * @brief Listener: Handles raw config payload (ESP_CFG_V2) from WebSocket or streams
+ */
+auto onConfigPayloadReceived = [](ConfigPayloadReceivedEvent* evt) {
+    if (evt == nullptr || evt->payload == nullptr) return;
+    INFO("[Config] Processing raw ESP_CFG_V2 payload...");
+    uniuno::ParseResult result = {};
+    uniuno::AchaemenidConfigProtocol parser;
+    if (parser.parse(evt->payload, result)) {
+        if (result.count > 0) {
+            ConfigApplier::apply(result, &pinManager);
+            if (segmentStorage) {
+                segmentStorage->saveSegmentConfig(result);
+            }
+        }
+
+        ConfigLoadedEvent loadedEvt;
+        loadedEvt.pinCount = result.count;
+        loadedEvt.mqtt = result.mqtt;
+        loadedEvt.wifiCount = result.wifiCount;
+        for (int i = 0; i < result.wifiCount; ++i) {
+            loadedEvt.wifi[i] = result.wifi[i];
+        }
+
+        eventBus.dispatch(loadedEvt);
+        INFOF("[Config] Config applied & dispatched: %d pins, %d WiFi APs", result.count, result.wifiCount);
+    } else {
+        WARNING("[Config] Failed to parse ESP_CFG_V2 payload!");
     }
 };
 
@@ -201,4 +249,5 @@ void setupEventBus() {
     eventBus.on<StateSyncRequestEvent>(onStateSyncRequest);
     eventBus.on<NetworkStatusEvent>(onNetworkStatus);
     eventBus.on<CloudSyncRequestEvent>(onCloudSyncRequest);
+    eventBus.on<ConfigPayloadReceivedEvent>(onConfigPayloadReceived);
 }

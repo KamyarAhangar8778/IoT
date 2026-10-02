@@ -3,10 +3,6 @@
 #include <ArduinoJson.h>
 #include <Optimization/CompilerTraits.h>
 #include <Optimization/LatencyConfig.h>
-#include <AchaemenidConfigProtocol.h>
-#include <ConfigApplier.h>
-#include <core/Globals.h>
-#include <ISegmentStorage.h>
 
 namespace uniuno {
 
@@ -54,31 +50,9 @@ HOT_PATH void WsClientParser::parseMessage(const websockets::WebsocketsMessage& 
     } else {
         String text = message.data();
         if (text.startsWith("ESP_CFG_V2")) {
-            Serial.println("[WebSocket] Received Config payload. Parsing via ACP...");
-            ParseResult result = {};
-            AchaemenidConfigProtocol parser;
-            if (parser.parse(text.c_str(), result)) {
-                if (result.count > 0) {
-                    ConfigApplier::apply(result, &pinManager);
-                    if (segmentStorage) {
-                        segmentStorage->saveSegmentConfig(result);
-                    }
-                }
-
-                ConfigLoadedEvent evt;
-                evt.pinCount = result.count;
-                evt.mqtt = result.mqtt;
-                evt.wifiCount = result.wifiCount;
-                for (int i = 0; i < result.wifiCount; ++i) {
-                    evt.wifi[i] = result.wifi[i];
-                }
-
-                _dispatcher->dispatch(evt);
-                Serial.printf("[WebSocket] Config applied & dispatched: %d pins, %d WiFi APs, MQTT valid=%d\n",
-                              result.count, result.wifiCount, result.mqtt.valid ? 1 : 0);
-            } else {
-                Serial.println("[WebSocket] Failed to parse ESP_CFG_V2 payload!");
-            }
+            Serial.println("[WebSocket] Received Config payload. Dispatching event...");
+            ConfigPayloadReceivedEvent cfgEvt{text.c_str()};
+            _dispatcher->dispatch(cfgEvt);
         } else if (text.indexOf("\"state_sync\"") >= 0) {
             Serial.println("[WebSocket] Received state_sync payload from Cloudflare");
             StaticJsonDocument<1024> doc;
