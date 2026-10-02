@@ -159,7 +159,8 @@ void AchaemenidWebSocketClient::onEventsCallback(websockets::WebsocketsEvent eve
         portEXIT_CRITICAL(&firstConnMux_);
 
         if (isFirst) {
-            Serial.println("[WebSocket] Connection Opened (First). Requesting states...");
+            Serial.println("[WebSocket] Connection Opened (First). Requesting config & states...");
+            requestConfig();
             sendText("{\"type\":\"get_all_states\"}");
         } else {
             Serial.println("[WebSocket] Connection Reopened. Syncing local state...");

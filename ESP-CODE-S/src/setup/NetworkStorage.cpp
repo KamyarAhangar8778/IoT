@@ -5,33 +5,46 @@
 Preferences prefs;
 
 void saveNetworkConfig(const ConfigLoadedEvent& config) {
+    if (config.wifiCount <= 0 && !config.mqtt.valid) {
+        INFO("[NetworkStorage] No WiFi or MQTT config to update. Skipped.");
+        return;
+    }
+
     bool started = prefs.begin("AchaemenidNet", false); // false = read/write
     if (!started) {
         ERROR("[NetworkStorage] Failed to open Preferences");
         return;
     }
 
-    // Save WiFi
-    prefs.putInt("wifiCount", config.wifiCount);
-    for (int i = 0; i < config.wifiCount; i++) {
-        String ssidKey = "ssid" + String(i);
-        String passKey = "pass" + String(i);
-        
-        // Smart write: only write if changed to save flash wear
-        String currentSsid = prefs.getString(ssidKey.c_str(), "");
-        String currentPass = prefs.getString(passKey.c_str(), "");
-        
-        if (currentSsid != config.wifi[i].ssid) {
-            prefs.putString(ssidKey.c_str(), config.wifi[i].ssid);
-            INFOF("[NetworkStorage] [DEBUG] WiFi SSID changed from '%s' to '%s'. Updated in NVS.", currentSsid.c_str(), config.wifi[i].ssid);
-        } else {
-            INFOF("[NetworkStorage] [DEBUG] WiFi SSID '%s' unchanged. Skipped flash write.", config.wifi[i].ssid);
+    // Save WiFi only if valid networks are provided
+    if (config.wifiCount > 0) {
+        int oldCount = prefs.getInt("wifiCount", 0);
+        prefs.putInt("wifiCount", config.wifiCount);
+        for (int i = 0; i < config.wifiCount; i++) {
+            String ssidKey = "ssid" + String(i);
+            String passKey = "pass" + String(i);
+            
+            // Smart write: only write if changed to save flash wear
+            String currentSsid = prefs.getString(ssidKey.c_str(), "");
+            String currentPass = prefs.getString(passKey.c_str(), "");
+            
+            if (currentSsid != config.wifi[i].ssid) {
+                prefs.putString(ssidKey.c_str(), config.wifi[i].ssid);
+                INFOF("[NetworkStorage] [DEBUG] WiFi SSID changed from '%s' to '%s'. Updated in NVS.", currentSsid.c_str(), config.wifi[i].ssid);
+            } else {
+                INFOF("[NetworkStorage] [DEBUG] WiFi SSID '%s' unchanged. Skipped flash write.", config.wifi[i].ssid);
+            }
+            if (currentPass != config.wifi[i].password) {
+                prefs.putString(passKey.c_str(), config.wifi[i].password);
+                INFO("[NetworkStorage] [DEBUG] WiFi Password changed. Updated in NVS.");
+            } else {
+                INFO("[NetworkStorage] [DEBUG] WiFi Password unchanged. Skipped flash write.");
+            }
         }
-        if (currentPass != config.wifi[i].password) {
-            prefs.putString(passKey.c_str(), config.wifi[i].password);
-            INFO("[NetworkStorage] [DEBUG] WiFi Password changed. Updated in NVS.");
-        } else {
-            INFO("[NetworkStorage] [DEBUG] WiFi Password unchanged. Skipped flash write.");
+        // Clean up old keys if count decreased
+        for (int i = config.wifiCount; i < oldCount; i++) {
+            prefs.remove(("ssid" + String(i)).c_str());
+            prefs.remove(("pass" + String(i)).c_str());
         }
     }
 

@@ -71,7 +71,7 @@ public:
 
   void clear_access_points() override {
     credentials.clear();
-    wifiMulti.APlist.clear();
+    wifiMulti.cleanAPlist();
     Serial.println("[WiFi] Multi-AP list cleared.");
   }
 

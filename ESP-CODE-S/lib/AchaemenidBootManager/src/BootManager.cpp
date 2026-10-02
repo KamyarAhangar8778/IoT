@@ -3,6 +3,7 @@
 #include <ConfigApplier.h>
 #include <AppEvents.h>
 #include <AchaemenidWebSocketClient.h>
+#include <setup/FallbackAP.h>
 
 BootManager::BootManager() 
     : state_(BootState::CONNECT_WIFI),
@@ -32,13 +33,19 @@ void BootManager::restartFn() {
 }
 
 void BootManager::bootErrorFn(uniuno::Error e) {
-    ERRORF("[Boot] Critical Failure: %s. Restarting in 5s...", (const char*)e);
+    ERRORF("[Boot] WiFi Connection Failed: %s", (const char*)e);
+#if ENABLE_FALLBACK_AP
+    INFO("[Boot] Activating Fallback Access Point mode for WiFi setup...");
+    uniuno::FallbackAP::start();
+#else
+    ERROR("[Boot] Fallback AP disabled. Restarting in 5s...");
     if (ctx_.appTimer != nullptr) {
         ctx_.appTimer->setTimeout(uniuno::makeStaticFunction(&BootManager::restartFn), 5000);
     } else {
         delay(5000);
         ESP.restart();
     }
+#endif
 }
 
 void BootManager::startBootSequenceAsync(BootContext ctx) {
@@ -55,11 +62,7 @@ void BootManager::startBootSequenceAsync(BootContext ctx) {
         Serial.println("==========================================");
         Serial.println("  Instant Boot — Config loaded from NVS   ");
         Serial.println("==========================================");
-
-        ConfigLoadedEvent evt;
-
-        evt.pinCount = applied;
-        ctx_.eventBus->dispatch(evt);
+        // نکته: رویداد خالی با wifiCount=0 به EventBus ارسال نمی‌شود تا NVS پاک نشود.
     } else {
         WARNING("[Boot] NVS empty or storage unavailable. No configuration loaded. Please push config.");
     }

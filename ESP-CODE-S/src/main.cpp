@@ -15,6 +15,7 @@
 #include <core/WebSocketServer.h>
 #include <core/WebSocketClient.h>
 #include <NvsSegmentStorage.h>
+#include <setup/FallbackAP.h>
 
 void setup() {
     Serial.begin(115200);
@@ -103,4 +104,10 @@ void loop() {
 
     // 6. WebSocket Client (Cloud API) - Zero Latency KeepAlive
     if (wsClient) wsClient->loop();
+
+#if ENABLE_FALLBACK_AP
+    if (uniuno::FallbackAP::isRunning()) {
+        uniuno::FallbackAP::handleClient();
+    }
+#endif
 }

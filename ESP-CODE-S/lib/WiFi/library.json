@@ -1,0 +1,25 @@
+{
+  "name": "WiFi",
+  "version": "3.1.0",
+  "description": "Optimized WiFi library for ESP32 with enhanced async connect/write and zero-copy buffers.",
+  "keywords": "wifi, network, esp32, async",
+  "authors": [
+    {
+      "name": "KavehAhangar",
+      "email": "Kavehahangar8778@gmail.com",
+      "maintainer": true
+    }
+  ],
+  "frameworks": "arduino",
+  "platforms": "espressif32",
+  "build": {
+    "includeDir": "src",
+    "srcFilter": [
+      "+<*>",
+      "-<../examples>"
+    ],
+    "flags": [
+      "-I src"
+    ]
+  }
+}
