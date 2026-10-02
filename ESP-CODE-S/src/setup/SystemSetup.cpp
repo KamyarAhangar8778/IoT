@@ -73,13 +73,18 @@ void setupMqtt() {
     // entirely and toggle the pin directly in the MQTT data callback.
     // Latency: broker → TCP recv → parse → pin set = single call chain.
     mqttDispatcher->setSyncHandler(0x01, [](const uint8_t* payload, size_t len) {
-        if (len < 7) return;
+        if (len < 3) return;
         int pinNum = payload[1];
         bool value = (payload[2] == 0x01);
-        int timer = (len >= 11) ?
+        int timer = (len >= 7) ?
             (int)(payload[3] | (payload[4] << 8) | (payload[5] << 16) | (payload[6] << 24)) : 0;
 
-        if (pinManager.getIsHandledByPin(pinNum)) return;
+        Serial.printf("[MQTT FastPath] Pin %d -> %s (timer=%ds)\n", pinNum, value ? "ON" : "OFF", timer);
+
+        if (pinManager.getIsHandledByPin(pinNum)) {
+            Serial.printf("[MQTT FastPath] Pin %d is handled by a rule. Ignored.\n", pinNum);
+            return;
+        }
         pinManager.setPinState(pinNum, value);
 
         // Sync: dispatch confirmed state change for dashboard/Cloudflare sync

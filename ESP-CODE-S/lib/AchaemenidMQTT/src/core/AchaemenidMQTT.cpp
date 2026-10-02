@@ -33,6 +33,7 @@ void AchaemenidMQTT::begin(const String& server, uint16_t port, const String& ba
     _config.user = user.c_str();
     _config.password = password.c_str();
     _config.willTopic = (baseTopic + "/Status").c_str();
+    _config.commandTopic = (baseTopic + "/Command").c_str();
     
     _mqttClient.setServer(_config.server.c_str(), _config.port);
     _mqttClient.setClientId(_config.clientId.c_str());
@@ -92,9 +93,16 @@ void AchaemenidMQTT::_onMqttConnect(bool sessionPresent) {
     snprintf(onlinePayload, sizeof(onlinePayload), "{\"status\":\"online\",\"ip\":\"%d.%d.%d.%d\"}", ip[0], ip[1], ip[2], ip[3]);
     publish(_config.willTopic.c_str(), onlinePayload, true);
 
+    if (_config.commandTopic.size() == 0 && _config.baseTopic.size() > 0) {
+        String cmd = String(_config.baseTopic.c_str()) + "/Command";
+        _config.commandTopic = cmd.c_str();
+    }
+
     if (_config.commandTopic.size() > 0) {
         _mqttClient.subscribe(_config.commandTopic.c_str(), _config.qos);
-        Serial.printf("[MQTT] Subscribed to topic: %s\n", _config.commandTopic.c_str());
+        Serial.printf("[MQTT] Subscribed to topic: %s (QoS %d)\n", _config.commandTopic.c_str(), _config.qos);
+    } else {
+        Serial.println("[MQTT] WARNING: No command topic configured to subscribe!");
     }
 }
 
@@ -104,8 +112,11 @@ void AchaemenidMQTT::_onMqttDisconnect(uniuno::mqtt::DisconnectReason reason) {
 }
 
 HOT_PATH IRAM_ATTR void AchaemenidMQTT::_onMqttMessage(const char* topic, const uint8_t* payload, uniuno::mqtt::MessageProperties props, size_t len) {
-    (void)topic;
     (void)props;
+    if (len > 0) {
+        Serial.printf("[MQTT] Incoming message on '%s' (len=%u, cmd=0x%02X)\n",
+                      topic ? topic : "?", (unsigned int)len, payload ? payload[0] : 0);
+    }
     if (LIKELY(_messageCallback)) {
         _messageCallback(payload, len);
     }

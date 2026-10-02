@@ -61,7 +61,12 @@ void setup() {
     // Also restore MQTT if valid
     if (savedMqtt.valid) {
         mqttClient.begin(String(savedMqtt.host), savedMqtt.port, String(savedMqtt.baseTopic), savedMqtt.qos, "", "");
-        INFOF("[System] Restored MQTT settings from NVS (Host: %s)", savedMqtt.host);
+        mqttClient.subscribe(String(savedMqtt.baseTopic) + "/Command");
+        INFOF("[System] Restored MQTT settings from NVS (Host: %s, Topic: %s)", savedMqtt.host, savedMqtt.baseTopic);
+    } else {
+        mqttClient.begin("broker.emqx.io", 1883, "KamyarIoT/Achaemenid", 1, "", "");
+        mqttClient.subscribe("KamyarIoT/Achaemenid/Command");
+        INFO("[System] Using default fallback MQTT (broker.emqx.io, Topic: KamyarIoT/Achaemenid/Command)");
     }
 
     INFO("[System] Setup completed. Starting Async Boot Sequence...");
