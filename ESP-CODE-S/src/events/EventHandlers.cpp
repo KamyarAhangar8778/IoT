@@ -222,6 +222,13 @@ auto onConfigPayloadReceived = [](ConfigPayloadReceivedEvent* evt) {
             if (segmentStorage) {
                 segmentStorage->saveSegmentConfig(result);
             }
+            // Sync all applied pin states to MQTT & WS immediately
+            for (int i = 0; i < MAX_SEGMENTS; i++) {
+                if (result.segments[i].valid && result.segments[i].pin >= 0 && strcmp(result.segments[i].type, "input") != 0) {
+                    PinStateChangedEvent changedEvt{result.segments[i].pin, result.segments[i].value, false};
+                    eventBus.dispatch(changedEvt);
+                }
+            }
         }
 
         ConfigLoadedEvent loadedEvt;

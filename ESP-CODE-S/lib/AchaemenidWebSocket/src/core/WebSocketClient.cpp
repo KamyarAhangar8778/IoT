@@ -110,13 +110,17 @@ void AchaemenidWebSocketClient::doConnect() {
         this->onEventsCallback(ev, data);
     });
 
-    const bool connected = client_->connect("api.agkalaa.ir", 443, "/ws");
+    bool connected = client_->connect("api.agkalaa.ir", 443, "/ws");
+    if (!connected) {
+        Serial.println("[WebSocket] [Task] Fallback: Trying durable-object-worker host...");
+        connected = client_->connect("durable-object-worker.kamyarahangar157.workers.dev", 443, "/ws");
+    }
 
     if (LIKELY(connected)) {
         Serial.println("[WebSocket] [Task] Connected successfully!");
         lastPingTime_ = millis();
     } else {
-        Serial.println("[WebSocket] [Task] Connection failed. Will retry in loop().");
+        Serial.println("[WebSocket] [Task] Connection failed to all endpoints. Will retry in loop().");
     }
 }
 
