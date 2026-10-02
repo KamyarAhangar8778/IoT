@@ -214,7 +214,7 @@ auto onNetworkStatus = [](NetworkStatusEvent* evt) {
 auto onConfigPayloadReceived = [](ConfigPayloadReceivedEvent* evt) {
     if (evt == nullptr || evt->payload == nullptr) return;
     INFO("[Config] Processing raw ESP_CFG_V2 payload...");
-    uniuno::ParseResult result = {};
+    ParseResult result = {};
     uniuno::AchaemenidConfigProtocol parser;
     if (parser.parse(evt->payload, result)) {
         if (result.count > 0) {
