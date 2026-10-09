@@ -10,11 +10,11 @@
 namespace uniuno {
 
 struct FastFunctionVTable {
-  void (*destroy)(void* dest);
-  void (*copy)(void* __restrict__ dest, const void* __restrict__ src);
+    void (*destroy)(void* dest);
+    void (*copy)(void* __restrict__ dest, const void* __restrict__ src);
 };
 
-template<typename Signature, size_t Capacity = 32>
+template <typename Signature, size_t Capacity = 32>
 class FastFunction;
 
-} // namespace uniuno
+}  // namespace uniuno

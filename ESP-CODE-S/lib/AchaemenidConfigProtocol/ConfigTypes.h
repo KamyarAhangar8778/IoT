@@ -6,14 +6,10 @@
 static const int MAX_SEGMENTS = 16;
 static const int MAX_WIFI_NETWORKS = 5;
 
-enum RuleActionType : uint8_t {
-    ACTION_IMMEDIATE = 0,
-    ACTION_AFTER_DELAY = 1,
-    ACTION_FOR_DURATION = 2
-};
+enum RuleActionType : uint8_t { ACTION_IMMEDIATE = 0, ACTION_AFTER_DELAY = 1, ACTION_FOR_DURATION = 2 };
 
 struct RuleAction {
-    int requiredHoldTime; // 0, 3, 5, 10
+    int requiredHoldTime;  // 0, 3, 5, 10
     int targetPin;
     int delay;
     RuleActionType actionType;
@@ -25,10 +21,10 @@ struct RuleAction {
 struct RuleConfig {
     RuleAction highActions[4];
     RuleAction lowActions[4];
-    
+
     int highActionCount;
     int lowActionCount;
-    
+
     bool active : 1;
 
     RuleConfig() : highActionCount(0), lowActionCount(0), active(false) {}
@@ -38,10 +34,10 @@ struct SegmentConfig {
     char id[32];
     char type[16];
     RuleConfig rule;
-    
+
     int pin;
     int autoOffDelay;
-    
+
     bool value : 1;
     bool valid : 1;
 
@@ -54,10 +50,10 @@ struct SegmentConfig {
 struct MqttConfig {
     char host[64];
     char baseTopic[64];
-    
+
     int port;
     int qos;
-    
+
     bool valid : 1;
 
     MqttConfig() : port(1883), qos(1), valid(false) {
@@ -69,7 +65,7 @@ struct MqttConfig {
 struct WifiNetworkConfig {
     char password[64];
     char ssid[32];
-    
+
     bool valid : 1;
 
     WifiNetworkConfig() : valid(false) {
@@ -82,13 +78,13 @@ struct ParseResult {
     SegmentConfig segments[MAX_SEGMENTS];
     MqttConfig mqtt;
     WifiNetworkConfig wifi[MAX_WIFI_NETWORKS];
-    
+
     int wifiCount;
     int count;
-    
+
     bool success : 1;
 
     ParseResult() : wifiCount(0), count(0), success(false) {}
 };
 
-#endif // CONFIG_TYPES_H
+#endif  // CONFIG_TYPES_H

@@ -53,4 +53,4 @@ private:
     SyncEntry sync_[MAX_SYNC];
 };
 
-} // namespace uniuno
+}  // namespace uniuno

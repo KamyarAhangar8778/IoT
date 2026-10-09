@@ -2,8 +2,7 @@
 #include <Utilities/logging.h>
 #include <Optimization/LatencyConfig.h>
 
-PinManager::PinManager() : _registry(), _timerManager(_registry), _stateManager(_registry) {
-}
+PinManager::PinManager() : _registry(), _timerManager(_registry), _stateManager(_registry) {}
 
 PinManager::~PinManager() {
     // No dynamic memory to clean up anymore!
@@ -30,9 +29,9 @@ void PinManager::printStatus() const {
         } else {
             st = entry->hasGpio ? entry->gpio.getState() : false;
         }
-        Serial.printf("  [%d] id=%s  type=%s pin=%d  state=%s  autoOff=%ds\n",
-            i, entry->segmentId, (entry->type == SegmentType::Input ? "input" : "output"),
-            entry->pinNumber, st ? "ON" : "OFF", entry->autoOffDelay);
+        Serial.printf("  [%d] id=%s  type=%s pin=%d  state=%s  autoOff=%ds\n", i, entry->segmentId,
+                      (entry->type == SegmentType::Input ? "input" : "output"), entry->pinNumber, st ? "ON" : "OFF",
+                      entry->autoOffDelay);
     }
     Serial.println("======================================");
 }
@@ -45,11 +44,8 @@ String PinManager::exportStateJson() const {
     for (int i = 0; i < MAX_PINS; i++) {
         const PinEntry* entry = _registry.getEntryByIndexConst(i);
         if (entry->active && entry->type != SegmentType::Input && entry->hasGpio) {
-            int written = snprintf(buf + offset, sizeof(buf) - offset,
-                                   "%s\"%d\":%s",
-                                   first ? "" : ",",
-                                   entry->pinNumber,
-                                   entry->gpio.getState() ? "true" : "false");
+            int written = snprintf(buf + offset, sizeof(buf) - offset, "%s\"%d\":%s", first ? "" : ",",
+                                   entry->pinNumber, entry->gpio.getState() ? "true" : "false");
             if (written > 0 && offset + written < (int)sizeof(buf) - 3) {
                 offset += written;
             }

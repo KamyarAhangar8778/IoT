@@ -15,15 +15,13 @@ struct MqttConfig {
     uint8_t qos = 0;
     uniuno::StaticString<32> user;
     uniuno::StaticString<32> password;
-    
+
     uniuno::StaticString<64> clientId;
     uniuno::StaticString<64> baseTopic;
     uniuno::StaticString<64> commandTopic;
     uniuno::StaticString<64> willTopic;
 
-    bool isValid() const {
-        return !server.empty() && !baseTopic.empty();
-    }
+    bool isValid() const { return !server.empty() && !baseTopic.empty(); }
 };
 
-} // namespace uniuno
+}  // namespace uniuno

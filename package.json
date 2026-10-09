@@ -9,6 +9,10 @@
     "dev": "npm run dev --workspace=DASHBOARD",
     "build": "npm run build --workspace=DASHBOARD",
     "lint": "npm run lint --workspace=DASHBOARD",
-    "start": "npm run start --workspace=DASHBOARD"
+    "start": "npm run start --workspace=DASHBOARD",
+    "format:esp": "bash scripts/format-esp.sh",
+    "format:esp:check": "bash scripts/format-esp.sh --check",
+    "lint:esp": "bash scripts/lint-esp.sh",
+    "check:esp": "npm run format:esp:check && npm run lint:esp"
   }
 }

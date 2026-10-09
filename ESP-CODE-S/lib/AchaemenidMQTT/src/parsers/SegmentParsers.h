@@ -18,4 +18,4 @@ private:
     void parseDashboardPresence(const uint8_t* payload, size_t len, EventDispatcher* dispatcher);
 };
 
-} // namespace uniuno
+}  // namespace uniuno

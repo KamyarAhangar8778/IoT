@@ -13,4 +13,4 @@ constexpr inline uint32_t hash_event_name(const char* str) {
     return hash;
 }
 
-} // namespace uniuno
+}  // namespace uniuno

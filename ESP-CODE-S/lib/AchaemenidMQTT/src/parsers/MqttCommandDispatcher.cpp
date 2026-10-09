@@ -62,4 +62,4 @@ HOT_PATH void MqttCommandDispatcher::handlePayload(const uint8_t* payload, size_
     WARNINGF("[MQTT Handler] Unknown binary command type or no handler found: 0x%02X", cmdType);
 }
 
-} // namespace uniuno
+}  // namespace uniuno

@@ -1,10 +1,8 @@
 #include "GpioSwitch.h"
 
-GpioSwitch::GpioSwitch() 
-    : _pin(-1), _state(false), _activeHigh(true) {}
+GpioSwitch::GpioSwitch() : _pin(-1), _state(false), _activeHigh(true) {}
 
-GpioSwitch::GpioSwitch(int8_t pin, bool activeHigh) 
-    : _pin(pin), _state(false), _activeHigh(activeHigh) {}
+GpioSwitch::GpioSwitch(int8_t pin, bool activeHigh) : _pin(pin), _state(false), _activeHigh(activeHigh) {}
 
 void GpioSwitch::setPin(int8_t pin, bool activeHigh) {
     _pin = pin;
@@ -46,7 +44,8 @@ int8_t GpioSwitch::getPin() const {
 
 void GpioSwitch::updateHardware() {
     // اگر activeHigh باشد، روشن بودن یعنی HIGH و خاموش بودن یعنی LOW
-    // اگر activeLow باشد (مانند برخی رله‌ها)، روشن بودن یعنی LOW و خاموش بودن یعنی HIGH
+    // اگر activeLow باشد (مانند برخی رله‌ها)، روشن بودن یعنی LOW و خاموش
+    // بودن یعنی HIGH
     if (_activeHigh) {
         digitalWrite(_pin, _state ? HIGH : LOW);
     } else {

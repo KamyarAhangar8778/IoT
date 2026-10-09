@@ -21,15 +21,16 @@ private:
     struct State {
         T value;
         std::atomic<int> m_ref_count;
-        template<typename... Args>
+        template <typename... Args>
         State(Args&&... args) : value(std::forward<Args>(args)...), m_ref_count(1) {}
     };
     State* state;
+
 public:
     AtomicSharedPtr() : state(nullptr) {}
     AtomicSharedPtr(T initial) : state(new State(std::move(initial))) {}
 
-    template<typename... Args>
+    template <typename... Args>
     static AtomicSharedPtr make(Args&&... args) {
         AtomicSharedPtr ptr;
         ptr.state = new State(std::forward<Args>(args)...);
@@ -53,9 +54,7 @@ public:
         return *this;
     }
 
-    AtomicSharedPtr(AtomicSharedPtr&& other) noexcept : state(other.state) {
-        other.state = nullptr;
-    }
+    AtomicSharedPtr(AtomicSharedPtr&& other) noexcept : state(other.state) { other.state = nullptr; }
 
     AtomicSharedPtr& operator=(AtomicSharedPtr&& other) noexcept {
         if (this != &other) {
@@ -66,9 +65,7 @@ public:
         return *this;
     }
 
-    ~AtomicSharedPtr() {
-        reset();
-    }
+    ~AtomicSharedPtr() { reset(); }
 
     void reset() {
         if (state) {
@@ -93,4 +90,4 @@ public:
     bool operator!=(const AtomicSharedPtr& other) const { return state != other.state; }
 };
 
-} // namespace uniuno
+}  // namespace uniuno

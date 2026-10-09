@@ -10,13 +10,15 @@
 #ifdef TIMER_EVENTS_ENABLED
 #include <Events/EventDispatcher.h>
 #else
-namespace uniuno { class EventDispatcher {}; } // Dummy if disabled
+namespace uniuno {
+class EventDispatcher {};
+}  // namespace uniuno
 #endif
 
 namespace uniuno {
 
 static FORCE_INLINE bool timer_due(unsigned long current, unsigned long deadline) {
-  return uniuno::asm_opt::is_timer_expired(current, deadline);
+    return uniuno::asm_opt::is_timer_expired(current, deadline);
 }
 
 /**
@@ -26,111 +28,112 @@ static FORCE_INLINE bool timer_due(unsigned long current, unsigned long deadline
 template <size_t MaxTimers = 32>
 class TimerProcessor {
 public:
-  TimerProcessor(const TimerCore* core, EventDispatcher* dispatcher)
-    : core_(core), dispatcher_(dispatcher) {}
+    TimerProcessor(const TimerCore* core, EventDispatcher* dispatcher) : core_(core), dispatcher_(dispatcher) {}
 
-  HOT_PATH void process(TimerStorage<MaxTimers>& storage, unsigned long cached_time) {
-    StaticArray<TimerNode*, MaxTimers> execution_queue;
-    auto& active_timers_ = storage.getActiveTimers();
+    HOT_PATH void process(TimerStorage<MaxTimers>& storage, unsigned long cached_time) {
+        StaticArray<TimerNode*, MaxTimers> execution_queue;
+        auto& active_timers_ = storage.getActiveTimers();
 
-    // Drain EVERY expired timer this tick. Fixed: the old `while (expired_count <
-    // size())` stopped after ~half because each pop shrank `size` while the
-    // counter grew, so a burst of N expired timers only ran ~N/2 per tick.
-    while (LIKELY(!active_timers_.empty())) {
-      TimerNode* top = active_timers_[0];
-      if (LIKELY(!timer_due(cached_time, top->next_call_ms))) break;
+        // Drain EVERY expired timer this tick. Fixed: the old `while (expired_count <
+        // size())` stopped after ~half because each pop shrank `size` while the
+        // counter grew, so a burst of N expired timers only ran ~N/2 per tick.
+        while (LIKELY(!active_timers_.empty())) {
+            TimerNode* top = active_timers_[0];
+            if (LIKELY(!timer_due(cached_time, top->next_call_ms))) break;
 
 #ifdef TIMER_HEAP_OPTIMIZED
-      TimerNode* node = storage.popActiveTop();
+            TimerNode* node = storage.popActiveTop();
 #else
-      std::pop_heap(active_timers_.begin(), active_timers_.end(),
-        [](const TimerNode* a, const TimerNode* b) {
-          return (long)(a->next_call_ms - b->next_call_ms) > 0;
-        });
-      active_timers_.pop_back();
-      TimerNode* node = top;
+            std::pop_heap(active_timers_.begin(), active_timers_.end(), [](const TimerNode* a, const TimerNode* b) {
+                return (long)(a->next_call_ms - b->next_call_ms) > 0;
+            });
+            active_timers_.pop_back();
+            TimerNode* node = top;
 #endif
 
-      node->state = TimerState::Processing;
-      node->pause_requested = false;
-      node->remove_requested = false;
-      execution_queue.push_back(node);
-    }
+            node->state = TimerState::Processing;
+            node->pause_requested = false;
+            node->remove_requested = false;
+            execution_queue.push_back(node);
+        }
 
-    // Active timers no longer track indices, no shifting needed
+        // Active timers no longer track indices, no shifting needed
 
-    auto& paused_timers_ = storage.getPausedTimers();
+        auto& paused_timers_ = storage.getPausedTimers();
 
-    for (TimerNode* node : execution_queue) {
+        for (TimerNode* node : execution_queue) {
 #ifdef TIMER_EVENT_EXPIRED
-      if (dispatcher_) {
-        long drift = asm_opt::calculate_drift(cached_time, node->next_call_ms);
-        TimerExpiredEvent event{node->id, node->next_call_ms, cached_time, drift, node->is_interval};
-        dispatcher_->dispatch(event);
-      }
+            if (dispatcher_) {
+                long drift = asm_opt::calculate_drift(cached_time, node->next_call_ms);
+                TimerExpiredEvent event{node->id, node->next_call_ms, cached_time, drift, node->is_interval};
+                dispatcher_->dispatch(event);
+            }
 #endif
 
-      bool should_stop = !node->is_interval;
+            bool should_stop = !node->is_interval;
 
 #ifdef TIMER_ENABLE_INTERVAL_UNTIL
-      if (node->is_until) {
-        if (node->until.until_callback) {
-          should_stop = node->until.until_callback();
-          if (!should_stop && node->until.until_timeout_callback && timer_due(cached_time, node->until_timeout_ms)) {
-            node->until.until_timeout_callback();
-            should_stop = true;
-          }
-        }
-      } else if (node->callback) {
-        node->callback();
-      }
+            if (node->is_until) {
+                if (node->until.until_callback) {
+                    should_stop = node->until.until_callback();
+                    if (!should_stop && node->until.until_timeout_callback &&
+                        timer_due(cached_time, node->until_timeout_ms)) {
+                        node->until.until_timeout_callback();
+                        should_stop = true;
+                    }
+                }
+            } else if (node->callback) {
+                node->callback();
+            }
 #else
-      if (node->callback) node->callback();
+            if (node->callback) node->callback();
 #endif
 
-      if (node->repeat_count > 0) {
-        node->repeat_count--;
-        if (node->repeat_count == 0) should_stop = true;
-      }
+            if (node->repeat_count > 0) {
+                node->repeat_count--;
+                if (node->repeat_count == 0) should_stop = true;
+            }
 
-      if (node->remove_requested) {
-        freeFinishedNode(storage, node);
-        continue;
-      }
+            if (node->remove_requested) {
+                freeFinishedNode(storage, node);
+                continue;
+            }
 
-      if (node->pause_requested) {
-        node->state = TimerState::Paused;
-        unsigned long now = core_->now();
-        node->remaining_ms = timer_due(now, node->next_call_ms) ? 0 : (node->next_call_ms - now);
-        paused_timers_.push_back(node);
-        continue;
-      }
+            if (node->pause_requested) {
+                node->state = TimerState::Paused;
+                unsigned long now = core_->now();
+                node->remaining_ms = timer_due(now, node->next_call_ms) ? 0 : (node->next_call_ms - now);
+                paused_timers_.push_back(node);
+                continue;
+            }
 
-      if (!should_stop) {
-        node->next_call_ms = cached_time + node->interval_ms;
-        node->state = TimerState::Active;
+            if (!should_stop) {
+                node->next_call_ms = cached_time + node->interval_ms;
+                node->state = TimerState::Active;
 #ifdef TIMER_EVENT_RESCHEDULED
-        if (dispatcher_) {
-          TimerRescheduledEvent event{node->id, node->next_call_ms, node->interval_ms};
-          dispatcher_->dispatch(event);
-        }
+                if (dispatcher_) {
+                    TimerRescheduledEvent event{node->id, node->next_call_ms, node->interval_ms};
+                    dispatcher_->dispatch(event);
+                }
 #endif
-        storage.addActiveNode(node);
-      } else {
-        freeFinishedNode(storage, node);
-      }
+                storage.addActiveNode(node);
+            } else {
+                freeFinishedNode(storage, node);
+            }
+        }
     }
-  }
 
 private:
-  void freeFinishedNode(TimerStorage<MaxTimers>& storage, TimerNode* node) {
-    if (node->is_interval) storage.decIntervals();
-    else storage.decTimeouts();
-    storage.freeNode(node);
-  }
+    void freeFinishedNode(TimerStorage<MaxTimers>& storage, TimerNode* node) {
+        if (node->is_interval)
+            storage.decIntervals();
+        else
+            storage.decTimeouts();
+        storage.freeNode(node);
+    }
 
-  const TimerCore* core_;
-  EventDispatcher* dispatcher_;
+    const TimerCore* core_;
+    EventDispatcher* dispatcher_;
 };
 
-} // namespace uniuno
+}  // namespace uniuno

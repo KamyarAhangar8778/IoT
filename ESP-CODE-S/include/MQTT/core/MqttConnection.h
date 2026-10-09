@@ -31,15 +31,14 @@ namespace mqtt {
  */
 class MqttConnection {
 public:
-    using ConnectCallback     = FastFunction<void(bool session_present), 64>;
-    using DisconnectCallback  = FastFunction<void(DisconnectReason), 64>;
-    using MessageCallback     = FastFunction<void(const char* topic, const uint8_t* payload,
-                                                  size_t length, MessageProperties props), 128>;
+    using ConnectCallback = FastFunction<void(bool session_present), 64>;
+    using DisconnectCallback = FastFunction<void(DisconnectReason), 64>;
+    using MessageCallback =
+        FastFunction<void(const char* topic, const uint8_t* payload, size_t length, MessageProperties props), 128>;
 
     static constexpr uint16_t TX_CAP = 512;
 
-    MqttConnection(ITransport& transport, const MqttConfig& cfg)
-        : transport_(transport), cfg_(cfg) {
+    MqttConnection(ITransport& transport, const MqttConfig& cfg) : transport_(transport), cfg_(cfg) {
         keepalive_.configure(cfg_.keep_alive_s);
         transport_.setConnectCallback([this](bool c) { onTransportConnect(c); });
         transport_.setDataCallback([this](const uint8_t* d, size_t l) { onData(d, l); });
@@ -76,8 +75,7 @@ public:
         if (!connected_) return 0;
         uint16_t pid = nextPacketId();
         uint8_t buf[TX_CAP];
-        size_t n = MqttPacketBuilder::buildSubscribe(buf, sizeof(buf), pid,
-                                                     (uint16_t)strlen(topic), topic, qos);
+        size_t n = MqttPacketBuilder::buildSubscribe(buf, sizeof(buf), pid, (uint16_t)strlen(topic), topic, qos);
         if (n && transport_.add(buf, n)) {
             transport_.send();
             subs_.add(pid, topic, qos);
@@ -86,22 +84,19 @@ public:
         return 0;
     }
 
-    uint16_t publish(const char* topic, uint8_t qos, bool retain,
-                     const uint8_t* payload, size_t length) {
+    uint16_t publish(const char* topic, uint8_t qos, bool retain, const uint8_t* payload, size_t length) {
         if (!connected_) return 0;
         uint16_t pid = (qos == 0) ? 0 : nextPacketId();
         uint8_t buf[TX_CAP];
-        size_t n = MqttPacketBuilder::buildPublish(buf, sizeof(buf),
-                                                   (uint16_t)strlen(topic), topic, pid,
-                                                   payload, length, qos, retain, false);
+        size_t n = MqttPacketBuilder::buildPublish(buf, sizeof(buf), (uint16_t)strlen(topic), topic, pid, payload,
+                                                   length, qos, retain, false);
         if (!(n && transport_.add(buf, n))) {
             return 0;
         }
         transport_.send();
         // QoS1/2: retain in outbox until ACKed (retransmit on timeout/reconnect)
         if (qos != 0) {
-            outbox_.store(qos, retain, false, pid, topic, (uint16_t)strlen(topic),
-                          payload, (uint16_t)length);
+            outbox_.store(qos, retain, false, pid, topic, (uint16_t)strlen(topic), payload, (uint16_t)length);
         }
         return (qos == 0) ? 1 : pid;
     }
@@ -110,11 +105,13 @@ public:
     void pollOutbox(uint32_t now_ms) {
         outbox_.poll(now_ms, [this](const OutboxEntry& e) {
             uint8_t buf[TX_CAP];
-            size_t n = MqttPacketBuilder::buildPublish(buf, sizeof(buf),
-                (uint16_t)e.topic_length, reinterpret_cast<const char*>(outbox_.topicOf(e)),
-                e.packet_id, outbox_.payloadOf(e), e.payload_length,
-                e.qos, e.retain, true /*dup*/);
-            if (n) { transport_.add(buf, n); transport_.send(); }
+            size_t n = MqttPacketBuilder::buildPublish(
+                buf, sizeof(buf), (uint16_t)e.topic_length, reinterpret_cast<const char*>(outbox_.topicOf(e)),
+                e.packet_id, outbox_.payloadOf(e), e.payload_length, e.qos, e.retain, true /*dup*/);
+            if (n) {
+                transport_.add(buf, n);
+                transport_.send();
+            }
         });
     }
 
@@ -125,9 +122,7 @@ public:
         if (connected_) pollOutbox(now_ms);
     }
 
-    void setReconnectFn(MqttReconnect::ReconnectFn fn) {
-        reconnect_.setReconnectFn(std::move(fn));
-    }
+    void setReconnectFn(MqttReconnect::ReconnectFn fn) { reconnect_.setReconnectFn(std::move(fn)); }
 
 private:
     void onTransportConnect(bool c) {
@@ -153,11 +148,13 @@ private:
             // Re-deliver any QoS1/2 messages still awaiting ACK from a prior session.
             outbox_.resendAll([this](const OutboxEntry& e) {
                 uint8_t b[TX_CAP];
-                size_t m = MqttPacketBuilder::buildPublish(b, sizeof(b),
-                    (uint16_t)e.topic_length, reinterpret_cast<const char*>(outbox_.topicOf(e)),
-                    e.packet_id, outbox_.payloadOf(e), e.payload_length,
-                    e.qos, e.retain, true /*dup*/);
-                if (m) { transport_.add(b, m); transport_.send(); }
+                size_t m = MqttPacketBuilder::buildPublish(
+                    b, sizeof(b), (uint16_t)e.topic_length, reinterpret_cast<const char*>(outbox_.topicOf(e)),
+                    e.packet_id, outbox_.payloadOf(e), e.payload_length, e.qos, e.retain, true /*dup*/);
+                if (m) {
+                    transport_.add(b, m);
+                    transport_.send();
+                }
             });
         } else {
             // Not enough TCP window — close and let reconnect handle it.
@@ -207,7 +204,7 @@ private:
                 break;
             case PacketType::PUBLISH: {
                 uint8_t qos = (p.flags & 0x06) >> 1;
-                MessageProperties props{ qos, (p.flags & 0x08) != 0, (p.flags & 0x01) != 0 };
+                MessageProperties props{qos, (p.flags & 0x08) != 0, (p.flags & 0x01) != 0};
                 if (on_message_ && p.topic) {
                     on_message_(p.topic, p.payload, p.payload_length, props);
                 }
@@ -269,8 +266,10 @@ private:
         outbox_.clear();
         parser_.reset();
         keepalive_.reset(0);
-        if (was && on_disconnect_) on_disconnect_(reason);
-        else if (!was) reconnect_.onDisconnect(millis());
+        if (was && on_disconnect_)
+            on_disconnect_(reason);
+        else if (!was)
+            reconnect_.onDisconnect(millis());
     }
 
     uint16_t nextPacketId() {
@@ -287,16 +286,16 @@ private:
     MqttReconnect reconnect_;
     MqttOutbox<16, 1024> outbox_;
 
-    char topic_buf_[256];   // >= max_topic_length
+    char topic_buf_[256];  // >= max_topic_length
     uint16_t packet_id_ = 0;
 
     bool connected_ = false;
     bool connecting_ = false;
 
-    ConnectCallback    on_connect_;
+    ConnectCallback on_connect_;
     DisconnectCallback on_disconnect_;
-    MessageCallback    on_message_;
+    MessageCallback on_message_;
 };
 
-} // namespace mqtt
-} // namespace uniuno
+}  // namespace mqtt
+}  // namespace uniuno

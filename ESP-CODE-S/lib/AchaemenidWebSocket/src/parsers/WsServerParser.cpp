@@ -13,8 +13,7 @@ void WsServerParser::parseMessage(const String& data, websockets::WebsocketsClie
     if (data.indexOf("\"command\":\"get_state\"") >= 0) {
         String stateJson = _stateProvider ? _stateProvider() : "{}";
         client.send(stateJson);
-    } 
-    else if (data.indexOf("\"command\":\"set_state\"") >= 0) {
+    } else if (data.indexOf("\"command\":\"set_state\"") >= 0) {
         // Simple non-blocking JSON parsing (Dashboard sends flat JSON)
         int pinIdx = data.indexOf("\"pin\":");
         int stateIdx = data.indexOf("\"state\":");
@@ -33,4 +32,4 @@ void WsServerParser::parseMessage(const String& data, websockets::WebsocketsClie
     }
 }
 
-} // namespace uniuno
+}  // namespace uniuno

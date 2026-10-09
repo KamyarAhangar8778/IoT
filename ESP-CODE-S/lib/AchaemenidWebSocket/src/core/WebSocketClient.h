@@ -27,8 +27,6 @@ public:
     void loop();
 
 private:
-
-
     void onMessageCallback(websockets::WebsocketsMessage message);
     void onEventsCallback(websockets::WebsocketsEvent event, String data);
 
@@ -37,7 +35,7 @@ private:
 
     websockets::WebsocketsClient* client_ = nullptr;
     WebSocketConfig config_;
-    
+
     volatile bool isRunning_;
     volatile bool firstConnection_;
     portMUX_TYPE firstConnMux_ = portMUX_INITIALIZER_UNLOCKED;
@@ -50,4 +48,4 @@ private:
     WsClientParser* parser_;
 };
 
-} // namespace uniuno
+}  // namespace uniuno

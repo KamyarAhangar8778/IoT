@@ -7,9 +7,10 @@ namespace uniuno {
 class KeyValueParser {
     const char* start;
     const char* end;
+
 public:
     KeyValueParser(const char* s, const char* e) : start(s), end(e) {}
-    
+
     // returns true if key exists, fills value buffer
     bool getValue(const char* key, char* outVal, size_t maxLen) {
         size_t keyLen = strlen(key);
@@ -19,8 +20,9 @@ public:
             if (end - p > keyLen && strncmp(p, key, keyLen) == 0 && p[keyLen] == '=') {
                 const char* valStart = p + keyLen + 1;
                 const char* valEnd = valStart;
-                while (valEnd < end && *valEnd != ' ' && *valEnd != '\r') valEnd++;
-                
+                while (valEnd < end && *valEnd != ' ' && *valEnd != '\r')
+                    valEnd++;
+
                 size_t valLen = valEnd - valStart;
                 if (valLen >= maxLen) valLen = maxLen - 1;
                 strncpy(outVal, valStart, valLen);
@@ -28,12 +30,14 @@ public:
                 return true;
             }
             // Move to next space
-            while (p < end && *p != ' ' && *p != '\r') p++;
-            while (p < end && (*p == ' ' || *p == '\r')) p++;
+            while (p < end && *p != ' ' && *p != '\r')
+                p++;
+            while (p < end && (*p == ' ' || *p == '\r'))
+                p++;
         }
         return false;
     }
-    
+
     int getInt(const char* key, int defVal = 0) {
         char buf[16];
         if (getValue(key, buf, sizeof(buf))) {
@@ -96,14 +100,14 @@ bool AchaemenidConfigProtocol::parse(const char* payload, ParseResult& outResult
             bool hasId = kvp.getValue("id", idBuf, sizeof(idBuf));
             bool hasType = kvp.getValue("type", typeBuf, sizeof(typeBuf));
             bool hasPin = kvp.getValue("pin", pinBuf, sizeof(pinBuf));
-            
+
             if (hasId && hasType && hasPin) {
                 int pinNum = parsePinNumber(pinBuf);
                 bool valid = (strlen(idBuf) > 0) && (strlen(typeBuf) > 0) && (pinNum >= 0);
-                
+
                 strncpy(outResult.segments[segIndex].id, idBuf, sizeof(outResult.segments[segIndex].id) - 1);
                 strncpy(outResult.segments[segIndex].type, typeBuf, sizeof(outResult.segments[segIndex].type) - 1);
-                
+
                 outResult.segments[segIndex].pin = pinNum;
                 outResult.segments[segIndex].value = (kvp.getInt("val", 0) > 0);
                 outResult.segments[segIndex].autoOffDelay = kvp.getInt("ao", 0);
@@ -120,7 +124,7 @@ bool AchaemenidConfigProtocol::parse(const char* payload, ParseResult& outResult
             if (segIndex >= 0 && segIndex < MAX_SEGMENTS && outResult.segments[segIndex].valid) {
                 bool isHigh = (p[1] == 'H');
                 char tgtBuf[16] = {0};
-                
+
                 if (kvp.getValue("tgt", tgtBuf, sizeof(tgtBuf))) {
                     int targetPin = parsePinNumber(tgtBuf);
                     if (targetPin >= 0) {
@@ -129,9 +133,11 @@ bool AchaemenidConfigProtocol::parse(const char* payload, ParseResult& outResult
                             int c = outResult.segments[segIndex].rule.highActionCount;
                             if (c < 4) {
                                 outResult.segments[segIndex].rule.highActions[c].targetPin = targetPin;
-                                outResult.segments[segIndex].rule.highActions[c].requiredHoldTime = kvp.getInt("hld", 0);
+                                outResult.segments[segIndex].rule.highActions[c].requiredHoldTime =
+                                    kvp.getInt("hld", 0);
                                 outResult.segments[segIndex].rule.highActions[c].actionState = kvp.getInt("ast", 1) > 0;
-                                outResult.segments[segIndex].rule.highActions[c].actionType = static_cast<RuleActionType>(kvp.getInt("atp", 0));
+                                outResult.segments[segIndex].rule.highActions[c].actionType =
+                                    static_cast<RuleActionType>(kvp.getInt("atp", 0));
                                 outResult.segments[segIndex].rule.highActions[c].delay = kvp.getInt("dly", 0);
                                 outResult.segments[segIndex].rule.highActionCount++;
                             }
@@ -141,7 +147,8 @@ bool AchaemenidConfigProtocol::parse(const char* payload, ParseResult& outResult
                                 outResult.segments[segIndex].rule.lowActions[c].targetPin = targetPin;
                                 outResult.segments[segIndex].rule.lowActions[c].requiredHoldTime = kvp.getInt("hld", 0);
                                 outResult.segments[segIndex].rule.lowActions[c].actionState = kvp.getInt("ast", 0) > 0;
-                                outResult.segments[segIndex].rule.lowActions[c].actionType = static_cast<RuleActionType>(kvp.getInt("atp", 0));
+                                outResult.segments[segIndex].rule.lowActions[c].actionType =
+                                    static_cast<RuleActionType>(kvp.getInt("atp", 0));
                                 outResult.segments[segIndex].rule.lowActions[c].delay = kvp.getInt("dly", 0);
                                 outResult.segments[segIndex].rule.lowActionCount++;
                             }
@@ -153,27 +160,27 @@ bool AchaemenidConfigProtocol::parse(const char* payload, ParseResult& outResult
             // تجزیه تنظیمات MQTT
             char hostBuf[64] = {0};
             char topicBuf[64] = {0};
-            
+
             bool hasHost = kvp.getValue("h", hostBuf, sizeof(hostBuf));
             bool hasTopic = kvp.getValue("t", topicBuf, sizeof(topicBuf));
-            
+
             if (hasHost && hasTopic) {
                 strncpy(outResult.mqtt.host, hostBuf, sizeof(outResult.mqtt.host) - 1);
                 strncpy(outResult.mqtt.baseTopic, topicBuf, sizeof(outResult.mqtt.baseTopic) - 1);
                 outResult.mqtt.port = kvp.getInt("p", 1883);
                 outResult.mqtt.qos = kvp.getInt("q", 1);
                 outResult.mqtt.valid = true;
-                Serial.printf("[ACP] MQTT Config Parsed: host=%s port=%d topic=%s qos=%d\n", 
-                    outResult.mqtt.host, outResult.mqtt.port, outResult.mqtt.baseTopic, outResult.mqtt.qos);
+                Serial.printf("[ACP] MQTT Config Parsed: host=%s port=%d topic=%s qos=%d\n", outResult.mqtt.host,
+                              outResult.mqtt.port, outResult.mqtt.baseTopic, outResult.mqtt.qos);
             }
         } else if (strncmp(p, "W ", 2) == 0) {
             // تجزیه تنظیمات وای‌فای
             char ssidBuf[32] = {0};
             char passBuf[64] = {0};
-            
+
             bool hasSsid = kvp.getValue("s", ssidBuf, sizeof(ssidBuf));
             bool hasPass = kvp.getValue("p", passBuf, sizeof(passBuf));
-            
+
             if (hasSsid && hasPass && outResult.wifiCount < MAX_WIFI_NETWORKS) {
                 int c = outResult.wifiCount;
                 strncpy(outResult.wifi[c].ssid, ssidBuf, sizeof(outResult.wifi[c].ssid) - 1);
@@ -189,7 +196,7 @@ bool AchaemenidConfigProtocol::parse(const char* payload, ParseResult& outResult
         if (*eol == '\0') break;
         p = eol + 1;
     }
-    
+
     outResult.success = true;
     Serial.printf("[ACP] Parsed %d valid segments.\n", outResult.count);
     return true;
@@ -215,15 +222,11 @@ void AchaemenidConfigProtocol::printResult(const ParseResult* result) {
     for (int i = 0; i < MAX_SEGMENTS; i++) {
         if (!result->segments[i].valid) continue;
 
-        Serial.printf("  [%d] id=%s  type=%s  pin=%d  val=%s\n",
-            i,
-            result->segments[i].id,
-            result->segments[i].type,
-            result->segments[i].pin,
-            result->segments[i].value ? "ON" : "OFF");
+        Serial.printf("  [%d] id=%s  type=%s  pin=%d  val=%s\n", i, result->segments[i].id, result->segments[i].type,
+                      result->segments[i].pin, result->segments[i].value ? "ON" : "OFF");
     }
 
     Serial.println("=======================================");
 }
 
-} // namespace uniuno
+}  // namespace uniuno

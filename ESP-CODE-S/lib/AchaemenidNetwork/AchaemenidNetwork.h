@@ -12,7 +12,8 @@ namespace uniuno {
 
 class AchaemenidNetwork : public INetworkManager {
 public:
-    // سازنده: مقداردهی اولیه آداپتور و کانکتور وای‌فای از طریق تزریق وابستگی
+    // سازنده: مقداردهی اولیه آداپتور و کانکتور وای‌فای از طریق
+    // تزریق وابستگی
     AchaemenidNetwork(WiFiAdapter* wifiAdapter);
 
     // تخریب‌کننده
@@ -45,6 +46,6 @@ private:
     bool _connected;
 };
 
-} // namespace uniuno
+}  // namespace uniuno
 
-#endif // ACHAEMENID_NETWORK_H
+#endif  // ACHAEMENID_NETWORK_H

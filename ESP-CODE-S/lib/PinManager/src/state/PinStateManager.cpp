@@ -35,7 +35,8 @@ void PinStateManager::rebuildInputCache() {
     }
 }
 
-HOT_PATH IRAM_ATTR void PinStateManager::processInputs(const std::function<void(int, bool, unsigned long, const RuleConfig&)>& onInputChanged) {
+HOT_PATH IRAM_ATTR void PinStateManager::processInputs(
+    const std::function<void(int, bool, unsigned long, const RuleConfig&)>& onInputChanged) {
     if (_numInputs == 0) return;
 
     unsigned long currentMillis = millis();
@@ -49,7 +50,7 @@ HOT_PATH IRAM_ATTR void PinStateManager::processInputs(const std::function<void(
         uint8_t idx = _inputIndices[i];
         PinEntry* entry = _registry.getEntryByIndex(idx);
         if (!entry) continue;
-        
+
         int pin = entry->pinNumber;
 
         if (entry->stateStartTime == 0) {

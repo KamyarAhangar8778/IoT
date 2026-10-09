@@ -15,6 +15,6 @@ public:
     bool loadSegmentConfig(ParseResult& out) override;
 };
 
-} // namespace uniuno
+}  // namespace uniuno
 
-#endif // NVS_SEGMENT_STORAGE_H
+#endif  // NVS_SEGMENT_STORAGE_H

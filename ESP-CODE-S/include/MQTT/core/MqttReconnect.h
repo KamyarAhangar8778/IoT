@@ -20,7 +20,10 @@ public:
     using ReconnectFn = uniuno::FastFunction<void(), 24>;
 
     void setReconnectFn(ReconnectFn fn) { reconnect_ = std::move(fn); }
-    void reset() { retries_ = 0; scheduled_ms_ = 0; }
+    void reset() {
+        retries_ = 0;
+        scheduled_ms_ = 0;
+    }
 
     void onDisconnect(uint32_t now_ms) {
         if (retries_ >= MAX_RETRIES) return;  // give up; host may ESP.restart()
@@ -44,5 +47,5 @@ private:
     uint32_t scheduled_ms_ = 0;
 };
 
-} // namespace mqtt
-} // namespace uniuno
+}  // namespace mqtt
+}  // namespace uniuno

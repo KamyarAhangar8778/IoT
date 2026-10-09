@@ -18,7 +18,7 @@ public:
         PinEntry* entry = _registry.getEntryByPin(pin);
         if (entry) entry->autoOffDelay = delay;
     }
-    
+
     HOT_PATH FORCE_INLINE uniuno::TimerHandle getTimerIdByPin(int pin) const {
         const PinEntry* entry = _registry.getEntryByPinConst(pin);
         return entry ? entry->autoOffTimer : uniuno::TimerHandle();
@@ -28,7 +28,7 @@ public:
         PinEntry* entry = _registry.getEntryByPin(pin);
         if (entry) entry->autoOffTimer = timer;
     }
-    
+
     HOT_PATH FORCE_INLINE uniuno::TimerHandle getCloudSyncTimerIdByPin(int pin) const {
         const PinEntry* entry = _registry.getEntryByPinConst(pin);
         return entry ? entry->cloudSyncTimer : uniuno::TimerHandle();
@@ -38,7 +38,7 @@ public:
         PinEntry* entry = _registry.getEntryByPin(pin);
         if (entry) entry->cloudSyncTimer = timer;
     }
-    
+
     HOT_PATH FORCE_INLINE uniuno::TimerHandle getRuleActionTimerIdByPin(int pin) const {
         const PinEntry* entry = _registry.getEntryByPinConst(pin);
         return entry ? entry->ruleActionTimer : uniuno::TimerHandle();
@@ -48,7 +48,7 @@ public:
         PinEntry* entry = _registry.getEntryByPin(pin);
         if (entry) entry->ruleActionTimer = timer;
     }
-    
+
     HOT_PATH FORCE_INLINE uniuno::TimerHandle getHoldTimerIdByPin(int pin) const {
         const PinEntry* entry = _registry.getEntryByPinConst(pin);
         return entry ? entry->holdTimer : uniuno::TimerHandle();
@@ -66,4 +66,4 @@ private:
     PinRegistry& _registry;
 };
 
-#endif // PIN_TIMER_MANAGER_H
+#endif  // PIN_TIMER_MANAGER_H

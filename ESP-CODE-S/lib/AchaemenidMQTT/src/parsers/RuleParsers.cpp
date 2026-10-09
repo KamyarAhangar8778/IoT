@@ -28,14 +28,15 @@ void RuleParsers::handle(const uint8_t* payload, size_t len, EventDispatcher* di
 HOT_PATH IRAM_ATTR void RuleParsers::parseUpdateRule(const uint8_t* payload, size_t len, EventDispatcher* dispatcher) {
     if (LIKELY(len >= 3)) {
         size_t offset = 1;
-        
+
         StaticString<32> idStr;
         while (offset < len && payload[offset] != '\0' && idStr.size() < idStr.capacity()) {
             char c[2] = {(char)payload[offset++], '\0'};
             idStr += c;
         }
-        while (offset < len && payload[offset] != '\0') offset++;
-        if (offset < len) offset++; 
+        while (offset < len && payload[offset] != '\0')
+            offset++;
+        if (offset < len) offset++;
 
         RuleConfig newRule;
         newRule.active = true;
@@ -76,8 +77,9 @@ HOT_PATH IRAM_ATTR void RuleParsers::parseUpdateRule(const uint8_t* payload, siz
 
         SegmentUpdateRuleRequestEvent evt{idStr.c_str(), newRule};
         dispatcher->dispatch(evt);
-        INFOF("[MQTT Handler] Binary Update Rule: id=%s high=%d low=%d", idStr.c_str(), newRule.highActionCount, newRule.lowActionCount);
+        INFOF("[MQTT Handler] Binary Update Rule: id=%s high=%d low=%d", idStr.c_str(), newRule.highActionCount,
+              newRule.lowActionCount);
     }
 }
 
-} // namespace uniuno
+}  // namespace uniuno

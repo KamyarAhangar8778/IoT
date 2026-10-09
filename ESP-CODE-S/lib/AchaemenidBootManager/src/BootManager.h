@@ -21,10 +21,7 @@ struct BootContext {
     String* rawConfigPayload;
 };
 
-enum class BootState : uint8_t {
-    CONNECT_WIFI = 0,
-    DONE = 1
-};
+enum class BootState : uint8_t { CONNECT_WIFI = 0, DONE = 1 };
 
 class BootManager {
 private:
@@ -42,4 +39,4 @@ public:
     void startBootSequenceAsync(BootContext ctx);
 };
 
-#endif // BOOT_MANAGER_H
+#endif  // BOOT_MANAGER_H

@@ -6,7 +6,7 @@
 
 namespace uniuno {
 
-class AchaemenidMQTT; // Forward declaration
+class AchaemenidMQTT;  // Forward declaration
 
 /**
  * @brief Handles MQTT reconnection logic and exponential backoff
@@ -31,4 +31,4 @@ private:
     uint8_t _reconnectRetries = 0;
 };
 
-} // namespace uniuno
+}  // namespace uniuno

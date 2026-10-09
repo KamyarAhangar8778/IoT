@@ -10,7 +10,7 @@ namespace uniuno {
 
 /**
  * @brief Base class for contiguous arrays to perform Type Erasure and reduce Flash usage
- * By keeping non-templated logic here, we prevent LLVM/GCC from duplicating 
+ * By keeping non-templated logic here, we prevent LLVM/GCC from duplicating
  * the reserve/erase memory operations for every type.
  */
 class ArrayBase {
@@ -21,9 +21,9 @@ protected:
     bool is_heap_;
     bool fixed_capacity_;
 
-    ArrayBase(void* stack_ptr, std::size_t cap, bool fixed) 
+    ArrayBase(void* stack_ptr, std::size_t cap, bool fixed)
         : data_(stack_ptr), size_(0), capacity_(cap), is_heap_(false), fixed_capacity_(fixed) {}
-    
+
     ~ArrayBase() {
         if (is_heap_) {
             freeHeap(data_);
@@ -41,4 +41,4 @@ protected:
     bool insert_pod(std::size_t index, const void* value, std::size_t elem_size);
 };
 
-} // namespace uniuno
+}  // namespace uniuno

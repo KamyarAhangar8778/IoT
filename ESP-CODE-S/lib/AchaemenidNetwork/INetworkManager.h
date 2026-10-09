@@ -46,4 +46,4 @@ public:
     virtual WiFiConnector* getConnector() = 0;
 };
 
-} // namespace uniuno
+}  // namespace uniuno

@@ -15,15 +15,13 @@
 #include <AchaemenidNetwork.h>
 
 void setupErrorHandler() {
-    uniuno::ErrorHandler::getInstance().onError(
-        [](const uniuno::ErrorInfo& info) {
-            const char* sev =
-                info.severity == uniuno::ErrorSeverity::CRITICAL ? "CRIT" :
-                info.severity == uniuno::ErrorSeverity::ERROR    ? "ERR"  :
-                info.severity == uniuno::ErrorSeverity::WARNING  ? "WARN" : "INFO";
-            Serial.printf("[%s] %s: %s\n", sev, info.context, info.message);
-        }
-    );
+    uniuno::ErrorHandler::getInstance().onError([](const uniuno::ErrorInfo& info) {
+        const char* sev = info.severity == uniuno::ErrorSeverity::CRITICAL  ? "CRIT"
+                          : info.severity == uniuno::ErrorSeverity::ERROR   ? "ERR"
+                          : info.severity == uniuno::ErrorSeverity::WARNING ? "WARN"
+                                                                            : "INFO";
+        Serial.printf("[%s] %s: %s\n", sev, info.context, info.message);
+    });
     uniuno::ErrorHandler::getInstance().setThrottle("HTTP", 5000);
     uniuno::ErrorHandler::getInstance().setThrottle("MQTT", 5000);
 }
@@ -35,34 +33,35 @@ void setupNetworkAndTime() {
 
 void setupTimer() {
     uniuno::TimerFeatures features;
-    features.timeout  = true;
+    features.timeout = true;
     features.interval = true;
-    features.clear    = true;
+    features.clear = true;
     appTimer = new uniuno::Timer(features, millis, &eventBus);
 
     // حذف شد: safety-net interval که هر ۶۰ ثانیه printStatus صدا میزد
     // و باعث می‌شد که sync غیرضروری برای پین‌ها صورت بگیرد.
     // وضعیت پین‌ها فقط هنگام بوت (BootManager) یک‌بار چاپ می‌شود.
 
-    appTimer->setInterval([]() {
-        if (!configLoaded || !::network || !::network->isConnected()) return;
-        // Ping removed: MQTT connection is natively maintained by the custom MqttClient (keep-alive)
-        // LWT (Last Will and Testament) on /Status topic now handles offline detection.
-    }, 60000);
+    appTimer->setInterval(
+        []() {
+            if (!configLoaded || !::network || !::network->isConnected()) return;
+            // Ping removed: MQTT connection is natively maintained by the custom MqttClient (keep-alive)
+            // LWT (Last Will and Testament) on /Status topic now handles offline detection.
+        },
+        60000);
 }
-
 
 void setupMqtt() {
     mqttDispatcher = new uniuno::MqttCommandDispatcher();
-    
+
     static uniuno::StateParsers stateHandler;
     static uniuno::SegmentParsers segmentHandler;
     static uniuno::RuleParsers ruleHandler;
-    
+
     mqttDispatcher->registerHandler(&stateHandler);
     mqttDispatcher->registerHandler(&segmentHandler);
     mqttDispatcher->registerHandler(&ruleHandler);
-    
+
     mqttClient.setCallback([](const uint8_t* payload, size_t len) {
         if (mqttDispatcher) {
             mqttDispatcher->handlePayload(payload, len, &eventBus);
@@ -76,8 +75,7 @@ void setupMqtt() {
         if (len < 3) return;
         int pinNum = payload[1];
         bool value = (payload[2] == 0x01);
-        int timer = (len >= 7) ?
-            (int)(payload[3] | (payload[4] << 8) | (payload[5] << 16) | (payload[6] << 24)) : 0;
+        int timer = (len >= 7) ? (int)(payload[3] | (payload[4] << 8) | (payload[5] << 16) | (payload[6] << 24)) : 0;
 
         Serial.printf("[MQTT FastPath] Pin %d -> %s (timer=%ds)\n", pinNum, value ? "ON" : "OFF", timer);
 
@@ -94,22 +92,22 @@ void setupMqtt() {
         if (value && timer > 0 && appTimer) {
             // Auto-off via sync timer (deferred through app timer, not event bus)
             int p = pinNum;
-            appTimer->setTimeout([p]() {
-                if (pinManager.getIsHandledByPin(p)) return;
-                pinManager.setPinState(p, false);
+            appTimer->setTimeout(
+                [p]() {
+                    if (pinManager.getIsHandledByPin(p)) return;
+                    pinManager.setPinState(p, false);
 
-                // Dispatch state change for auto-off confirmation
-                PinStateChangedEvent offEvt{p, false, true};
-                eventBus.dispatch(offEvt);
-            }, timer * 1000);
+                    // Dispatch state change for auto-off confirmation
+                    PinStateChangedEvent offEvt{p, false, true};
+                    eventBus.dispatch(offEvt);
+                },
+                timer * 1000);
         }
     });
 }
 
 void setupWebSocket() {
-    auto stateProvider = []() -> String {
-        return pinManager.exportStateJson();
-    };
+    auto stateProvider = []() -> String { return pinManager.exportStateJson(); };
 
     auto wsFastPath = [](int pin, bool state) {
         if (pinManager.getIsHandledByPin(pin)) return;
@@ -125,13 +123,6 @@ void setupWebSocket() {
 }
 
 void setupRuleEngine() {
-    RuleContext ctx = {
-        &mqttClient,
-        appTimer,
-        &executor,
-        &eventBus,
-        &pinManager,
-        &isDashboardOnline
-    };
+    RuleContext ctx = {&mqttClient, appTimer, &executor, &eventBus, &pinManager, &isDashboardOnline};
     ruleEngine = new RuleEngine(ctx);
 }

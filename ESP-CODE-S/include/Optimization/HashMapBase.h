@@ -24,12 +24,15 @@ protected:
 
     static constexpr uint16_t EMPTY_BUCKET = 0xFFFF;
 
-    HashMapBase(void* entries_data, uint16_t* buckets, 
-                uint16_t max_size, uint16_t entry_size, uint16_t key_offset, 
+    HashMapBase(void* entries_data, uint16_t* buckets, uint16_t max_size, uint16_t entry_size, uint16_t key_offset,
                 HashFunc hash_func, EqualFunc equal_func)
-        : entries_data_(entries_data), buckets_(buckets),
-          max_size_(max_size), entry_size_(entry_size), key_offset_(key_offset),
-          hash_func_(hash_func), equal_func_(equal_func) {}
+        : entries_data_(entries_data)
+        , buckets_(buckets)
+        , max_size_(max_size)
+        , entry_size_(entry_size)
+        , key_offset_(key_offset)
+        , hash_func_(hash_func)
+        , equal_func_(equal_func) {}
 
     uint16_t findIndex_base(const void* key) const;
     uint16_t findSlot_base(const void* key) const;
@@ -38,4 +41,4 @@ protected:
     void clear_base();
 };
 
-} // namespace uniuno
+}  // namespace uniuno

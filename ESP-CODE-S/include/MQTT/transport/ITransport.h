@@ -20,9 +20,9 @@ namespace mqtt {
  */
 class ITransport {
 public:
-    using ConnectHandler    = FastFunction<void(bool connected), 24>;
-    using DataHandler       = FastFunction<void(const uint8_t* data, size_t len), 24>;
-    using PollHandler       = FastFunction<void(), 24>;
+    using ConnectHandler = FastFunction<void(bool connected), 24>;
+    using DataHandler = FastFunction<void(const uint8_t* data, size_t len), 24>;
+    using PollHandler = FastFunction<void(), 24>;
 
     virtual ~ITransport() = default;
 
@@ -47,5 +47,5 @@ public:
     virtual bool connected() = 0;
 };
 
-} // namespace mqtt
-} // namespace uniuno
+}  // namespace mqtt
+}  // namespace uniuno

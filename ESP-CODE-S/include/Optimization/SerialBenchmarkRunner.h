@@ -70,18 +70,16 @@ public:
         {
             const int ITERS = 10000;
             const int SLOTS = 16;
-            const char* mockIds[SLOTS] = {
-                "light_living", "relay_pump", "fan_bedroom", "rgb_strip",
-                "heater_bath",  "valve_garden", "door_lock", "socket_pc",
-                "light_hall",   "curtain_main", "siren_alarm", "light_yard",
-                "socket_tv",    "cooler_roof",  "pir_motion", "window_sensor"
-            };
+            const char* mockIds[SLOTS] = {"light_living", "relay_pump",   "fan_bedroom", "rgb_strip",
+                                          "heater_bath",  "valve_garden", "door_lock",   "socket_pc",
+                                          "light_hall",   "curtain_main", "siren_alarm", "light_yard",
+                                          "socket_tv",    "cooler_roof",  "pir_motion",  "window_sensor"};
             uint32_t mockHashes[SLOTS];
             for (int i = 0; i < SLOTS; ++i) {
                 mockHashes[i] = hash_event_name(mockIds[i]);
             }
 
-            const char* searchTarget = "window_sensor"; // worst-case (last entry)
+            const char* searchTarget = "window_sensor";  // worst-case (last entry)
             uint32_t targetHash = hash_event_name(searchTarget);
             volatile int matchIdx = -1;
 
@@ -121,8 +119,8 @@ public:
         {
             const int ITERS = 500;
             const int PINS = 8;
-            int pins[PINS] = { 2, 4, 12, 13, 14, 15, 26, 27 };
-            bool states[PINS] = { true, false, true, true, false, true, false, true };
+            int pins[PINS] = {2, 4, 12, 13, 14, 15, 26, 27};
+            bool states[PINS] = {true, false, true, true, false, true, false, true};
 
             // Baseline: Dynamic heap String concatenations
             unsigned long startBase = micros();
@@ -145,8 +143,8 @@ public:
                 int offset = snprintf(buf, sizeof(buf), "{\"type\":\"state_sync\",\"states\":{");
                 bool first = true;
                 for (int i = 0; i < PINS; ++i) {
-                    int w = snprintf(buf + offset, sizeof(buf) - offset,
-                                     "%s\"%d\":%s", first ? "" : ",", pins[i], states[i] ? "true" : "false");
+                    int w = snprintf(buf + offset, sizeof(buf) - offset, "%s\"%d\":%s", first ? "" : ",", pins[i],
+                                     states[i] ? "true" : "false");
                     if (w > 0 && offset + w < (int)sizeof(buf) - 3) offset += w;
                     first = false;
                 }
@@ -209,9 +207,7 @@ public:
             volatile int counter = 0;
 
             // Baseline: std::function passed by-value (copy-constructed per invocation)
-            auto byValueRunner = [](std::function<void(int)> fn, int v) {
-                fn(v);
-            };
+            auto byValueRunner = [](std::function<void(int)> fn, int v) { fn(v); };
             unsigned long startBase = micros();
             for (int i = 0; i < ITERS; ++i) {
                 byValueRunner([&counter](int v) { counter += v; }, 1);
@@ -220,9 +216,7 @@ public:
 
             // Optimized: Reusable static closure passed by const reference
             static const auto staticFn = [&counter](int v) { counter += v; };
-            auto byRefRunner = [](const std::function<void(int)>& fn, int v) {
-                fn(v);
-            };
+            auto byRefRunner = [](const std::function<void(int)>& fn, int v) { fn(v); };
             unsigned long startOpt = micros();
             for (int i = 0; i < ITERS; ++i) {
                 byRefRunner(staticFn, 1);
@@ -257,9 +251,8 @@ private:
     }
 
     static void printResultRow(const char* name, unsigned long base, unsigned long opt, float speedup) {
-        Serial.printf(" [%-38s] Base: %6lu us | Opt: %6lu us | Gain: +%5.1f%%\n",
-                      name, base, opt, speedup);
+        Serial.printf(" [%-38s] Base: %6lu us | Opt: %6lu us | Gain: +%5.1f%%\n", name, base, opt, speedup);
     }
 };
 
-} // namespace uniuno
+}  // namespace uniuno

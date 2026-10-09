@@ -4,9 +4,7 @@
 
 namespace uniuno {
 
-MqttConnectionManager::MqttConnectionManager(AchaemenidMQTT* mqttClient) 
-    : _mqttClient(mqttClient) {
-}
+MqttConnectionManager::MqttConnectionManager(AchaemenidMQTT* mqttClient) : _mqttClient(mqttClient) {}
 
 void MqttConnectionManager::onConnect() {
     _reconnectRetries = 0;
@@ -39,4 +37,4 @@ void MqttConnectionManager::reconnectWrapper(AchaemenidMQTT* instance) {
     }
 }
 
-} // namespace uniuno
+}  // namespace uniuno

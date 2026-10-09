@@ -23,9 +23,9 @@ public:
 
     struct Record {
         uint32_t topic_hash;
-        uint16_t packet_id;   // SUBACK packet id that created this
-        uint8_t  qos;
-        bool     active;
+        uint16_t packet_id;  // SUBACK packet id that created this
+        uint8_t qos;
+        bool active;
     };
 
     MqttSubscriptions() = default;
@@ -34,16 +34,14 @@ public:
     bool add(uint16_t packet_id, const char* topic, uint8_t qos) {
         uint32_t h = hashTopic(topic);
         if (LIKELY(table_.size() < MAX_SUBSCRIPTIONS)) {
-            Record r{ h, packet_id, qos, true };
+            Record r{h, packet_id, qos, true};
             return table_.insert(topic, r);
         }
         return false;
     }
 
     /// True if the topic matches a known subscription (exact compare).
-    bool isSubscribed(const char* topic) const {
-        return table_.contains(topic);
-    }
+    bool isSubscribed(const char* topic) const { return table_.contains(topic); }
 
     void clear() { table_.clear(); }
     size_t size() const { return table_.size(); }
@@ -64,5 +62,5 @@ private:
     StaticHashMap<const char*, Record, MAX_SUBSCRIPTIONS> table_;
 };
 
-} // namespace mqtt
-} // namespace uniuno
+}  // namespace mqtt
+}  // namespace uniuno

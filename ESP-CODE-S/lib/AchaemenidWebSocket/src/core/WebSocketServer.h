@@ -20,8 +20,6 @@ public:
     void broadcastState(const char* stateJson);
 
 private:
-
-    
     void handleMessage(uint8_t idx, websockets::WebsocketsMessage msg);
     void handleEvent(uint8_t idx, websockets::WebsocketsEvent event, String data);
 
@@ -34,4 +32,4 @@ private:
     class WsServerParser* parser_;
 };
 
-} // namespace uniuno
+}  // namespace uniuno

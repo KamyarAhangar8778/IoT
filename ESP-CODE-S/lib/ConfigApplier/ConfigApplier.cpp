@@ -42,4 +42,4 @@ int apply(const ParseResult& config, PinManager* pinManager) {
     return applied;
 }
 
-} // namespace ConfigApplier
+}  // namespace ConfigApplier

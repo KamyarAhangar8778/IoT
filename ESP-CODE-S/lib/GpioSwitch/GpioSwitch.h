@@ -44,4 +44,4 @@ private:
     void updateHardware();
 };
 
-#endif // GPIO_SWITCH_H
+#endif  // GPIO_SWITCH_H

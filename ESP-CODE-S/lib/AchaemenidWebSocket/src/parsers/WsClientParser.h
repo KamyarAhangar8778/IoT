@@ -21,4 +21,4 @@ private:
     FastPathCallback _fastPath;
 };
 
-} // namespace uniuno
+}  // namespace uniuno

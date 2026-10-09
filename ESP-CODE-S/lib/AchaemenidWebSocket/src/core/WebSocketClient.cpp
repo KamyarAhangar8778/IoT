@@ -6,7 +6,6 @@
 #include <Optimization/LatencyConfig.h>
 #include "../parsers/WsClientParser.h"
 
-
 namespace uniuno {
 
 // SSL client bypasses cert validation
@@ -15,25 +14,23 @@ public:
     InsecureEsp32TcpClient() {
         client.setInsecure();
 #if OPTIMIZE_WS_TCP_NODELAY
-        client.setNoDelay(true); // <--- ZERO LATENCY WS: Disable Nagle for instant frame dispatch
+        client.setNoDelay(true);  // <--- ZERO LATENCY WS: Disable Nagle for instant frame dispatch
 #endif
     }
-    ~InsecureEsp32TcpClient() { client.stop(); }
+    ~InsecureEsp32TcpClient() {
+        client.stop();
+    }
 };
 
-AchaemenidWebSocketClient::AchaemenidWebSocketClient(EventDispatcher* dispatcher, std::function<String()> stateProvider, WsClientParser::FastPathCallback fastPath)
-    : isRunning_(false), firstConnection_(true), dispatcher_(dispatcher), stateProvider_(stateProvider)
-{
+AchaemenidWebSocketClient::AchaemenidWebSocketClient(EventDispatcher* dispatcher, std::function<String()> stateProvider,
+                                                     WsClientParser::FastPathCallback fastPath)
+    : isRunning_(false), firstConnection_(true), dispatcher_(dispatcher), stateProvider_(stateProvider) {
     parser_ = new WsClientParser(dispatcher_, std::move(fastPath));
     auto secureClient = std::make_shared<InsecureEsp32TcpClient>();
     client_ = new websockets::WebsocketsClient(secureClient);
 
-    client_->onMessage([this](websockets::WebsocketsMessage msg) {
-        this->onMessageCallback(msg);
-    });
-    client_->onEvent([this](websockets::WebsocketsEvent ev, String data) {
-        this->onEventsCallback(ev, data);
-    });
+    client_->onMessage([this](websockets::WebsocketsMessage msg) { this->onMessageCallback(msg); });
+    client_->onEvent([this](websockets::WebsocketsEvent ev, String data) { this->onEventsCallback(ev, data); });
 }
 
 AchaemenidWebSocketClient::~AchaemenidWebSocketClient() {
@@ -65,7 +62,8 @@ void AchaemenidWebSocketClient::requestConfig() {
 
 void AchaemenidWebSocketClient::syncPinState(int pin, bool state) {
     char payload[64];
-    snprintf(payload, sizeof(payload), "{\"type\":\"sync_pin\",\"pin\":%d,\"state\":%s}", pin, state ? "true" : "false");
+    snprintf(payload, sizeof(payload), "{\"type\":\"sync_pin\",\"pin\":%d,\"state\":%s}", pin,
+             state ? "true" : "false");
     sendText(payload);
 }
 
@@ -99,16 +97,12 @@ void AchaemenidWebSocketClient::doConnect() {
         delete client_;
         client_ = nullptr;
     }
-    
+
     auto secureClient = std::make_shared<InsecureEsp32TcpClient>();
     client_ = new websockets::WebsocketsClient(secureClient);
 
-    client_->onMessage([this](websockets::WebsocketsMessage msg) {
-        this->onMessageCallback(msg);
-    });
-    client_->onEvent([this](websockets::WebsocketsEvent ev, String data) {
-        this->onEventsCallback(ev, data);
-    });
+    client_->onMessage([this](websockets::WebsocketsMessage msg) { this->onMessageCallback(msg); });
+    client_->onEvent([this](websockets::WebsocketsEvent ev, String data) { this->onEventsCallback(ev, data); });
 
     bool connected = client_->connect("api.agkalaa.ir", 443, "/ws");
     if (!connected) {
@@ -136,15 +130,8 @@ IRAM_ATTR void AchaemenidWebSocketClient::loop() {
         }
     } else {
         isConnecting_ = true;
-        xTaskCreatePinnedToCore(
-            AchaemenidWebSocketClient::connectTask,
-            "wsConnect",
-            WS_CONNECT_TASK_STACK,
-            this,
-            WS_CONNECT_TASK_PRIO,
-            &connectTaskHandle_,
-            WS_CONNECT_TASK_CORE
-        );
+        xTaskCreatePinnedToCore(AchaemenidWebSocketClient::connectTask, "wsConnect", WS_CONNECT_TASK_STACK, this,
+                                WS_CONNECT_TASK_PRIO, &connectTaskHandle_, WS_CONNECT_TASK_CORE);
     }
 }
 
@@ -175,4 +162,4 @@ void AchaemenidWebSocketClient::onEventsCallback(websockets::WebsocketsEvent eve
     }
 }
 
-} // namespace uniuno
+}  // namespace uniuno

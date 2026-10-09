@@ -21,11 +21,7 @@ namespace mqtt {
  * payload is exposed as a zero-copy pointer into the RX buffer.
  */
 
-enum class ParseState : uint8_t {
-    FIXED_HEADER = 0,
-    REMAINING_LENGTH = 1,
-    BODY = 2
-};
+enum class ParseState : uint8_t { FIXED_HEADER = 0, REMAINING_LENGTH = 1, BODY = 2 };
 
 struct ParsedPacket {
     PacketType type = PacketType::RESERVED;
@@ -34,9 +30,9 @@ struct ParsedPacket {
 
     // PUBLISH fields
     uint16_t topic_length = 0;
-    const char* topic = nullptr;      // points into the caller's topic buffer
+    const char* topic = nullptr;  // points into the caller's topic buffer
     uint16_t packet_id = 0;
-    const uint8_t* payload = nullptr; // points into the RX data (zero-copy)
+    const uint8_t* payload = nullptr;  // points into the RX data (zero-copy)
     uint32_t payload_length = 0;
     uint32_t payload_offset = 0;
     bool has_payload = false;
@@ -67,13 +63,13 @@ public:
      * @param pos Current byte offset in data, updated as bytes are parsed.
      * @return true when a complete packet has been parsed (check parsed()).
      */
-    HOT_PATH FORCE_INLINE bool onData(const uint8_t* data, size_t len, size_t& pos,
-                                      char* topic_buf, uint16_t max_topic) {
+    HOT_PATH FORCE_INLINE bool onData(const uint8_t* data, size_t len, size_t& pos, char* topic_buf,
+                                      uint16_t max_topic) {
         while (pos < len) {
             switch (state_) {
                 case ParseState::FIXED_HEADER: {
                     const uint8_t byte = data[pos++];
-                    parsed_.type  = (PacketType)(byte >> 4);
+                    parsed_.type = (PacketType)(byte >> 4);
                     parsed_.flags = byte & 0x0F;
                     state_ = ParseState::REMAINING_LENGTH;
                     break;
@@ -136,16 +132,17 @@ private:
     }
 
     /** @brief Incremental PUBLISH body parsing (topic len, topic, packet id, payload). */
-    HOT_PATH FORCE_INLINE void consumePublish(const uint8_t* data, size_t pos,
-                                              size_t chunk, char* topic_buf,
+    HOT_PATH FORCE_INLINE void consumePublish(const uint8_t* data, size_t pos, size_t chunk, char* topic_buf,
                                               uint16_t max_topic) {
         const uint8_t qos = (parsed_.flags & 0x06) >> 1;
         size_t i = 0;
         // Topic length (2 bytes)
         while (i < chunk && body_pos_ + i < 2) {
             const uint8_t b = data[pos + i];
-            if (body_pos_ + i == 0) parsed_.topic_length = (uint16_t)(b << 8);
-            else parsed_.topic_length |= b;
+            if (body_pos_ + i == 0)
+                parsed_.topic_length = (uint16_t)(b << 8);
+            else
+                parsed_.topic_length |= b;
             i++;
         }
         // Topic bytes
@@ -167,8 +164,10 @@ private:
         if (qos != 0 && body_pos_ + i >= id_start && body_pos_ + i < id_start + 2) {
             while (i < chunk && body_pos_ + i < id_start + 2) {
                 const uint8_t b = data[pos + i];
-                if (body_pos_ + i == id_start) parsed_.packet_id = (uint16_t)(b << 8);
-                else parsed_.packet_id |= b;
+                if (body_pos_ + i == id_start)
+                    parsed_.packet_id = (uint16_t)(b << 8);
+                else
+                    parsed_.packet_id |= b;
                 i++;
             }
         }
@@ -188,17 +187,22 @@ private:
             case PacketType::CONNACK: {
                 for (size_t k = 0; k < chunk; k++) {
                     const uint32_t idx = body_pos_ + k;
-                    if (idx == 0) parsed_.session_present = (data[pos + k] & 0x01) != 0;
-                    else if (idx == 1) parsed_.connect_return_code = data[pos + k];
+                    if (idx == 0)
+                        parsed_.session_present = (data[pos + k] & 0x01) != 0;
+                    else if (idx == 1)
+                        parsed_.connect_return_code = data[pos + k];
                 }
                 break;
             }
             case PacketType::SUBACK: {
                 for (size_t k = 0; k < chunk; k++) {
                     const uint32_t idx = body_pos_ + k;
-                    if (idx == 0) parsed_.packet_id = (uint16_t)(data[pos + k] << 8);
-                    else if (idx == 1) parsed_.packet_id |= data[pos + k];
-                    else if (idx == 2) parsed_.ack_status = data[pos + k];
+                    if (idx == 0)
+                        parsed_.packet_id = (uint16_t)(data[pos + k] << 8);
+                    else if (idx == 1)
+                        parsed_.packet_id |= data[pos + k];
+                    else if (idx == 2)
+                        parsed_.ack_status = data[pos + k];
                 }
                 break;
             }
@@ -209,13 +213,15 @@ private:
             case PacketType::PUBCOMP: {
                 for (size_t k = 0; k < chunk; k++) {
                     const uint32_t idx = body_pos_ + k;
-                    if (idx == 0) parsed_.packet_id = (uint16_t)(data[pos + k] << 8);
-                    else if (idx == 1) parsed_.packet_id |= data[pos + k];
+                    if (idx == 0)
+                        parsed_.packet_id = (uint16_t)(data[pos + k] << 8);
+                    else if (idx == 1)
+                        parsed_.packet_id |= data[pos + k];
                 }
                 break;
             }
             default:
-                break; // ignore unknown body
+                break;  // ignore unknown body
         }
     }
 
@@ -226,5 +232,5 @@ private:
     ParsedPacket parsed_;
 };
 
-} // namespace mqtt
-} // namespace uniuno
+}  // namespace mqtt
+}  // namespace uniuno

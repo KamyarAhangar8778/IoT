@@ -10,7 +10,7 @@ namespace rules {
 class HoldTimeEvaluator {
 public:
     HoldTimeEvaluator(RuleContext& ctx);
-    
+
     void processRelease(const RuleAction* actions, int count, unsigned long durationSec, int sourcePin);
 
 private:
@@ -18,7 +18,7 @@ private:
     void executeAction(const RuleAction& act, int sourcePin);
 };
 
-} // namespace rules
-} // namespace uniuno
+}  // namespace rules
+}  // namespace uniuno
 
-#endif // HOLD_TIME_EVALUATOR_H
+#endif  // HOLD_TIME_EVALUATOR_H

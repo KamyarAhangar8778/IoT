@@ -4,11 +4,8 @@
 #include <AppEvents.h>
 #include <AchaemenidWebSocketClient.h>
 
-BootManager::BootManager() 
-    : state_(BootState::CONNECT_WIFI),
-      wifiFut_(uniuno::Future<void, void>::resolve()),
-      fetchConfigStartTime_(0) 
-{}
+BootManager::BootManager()
+    : state_(BootState::CONNECT_WIFI), wifiFut_(uniuno::Future<void, void>::resolve()), fetchConfigStartTime_(0) {}
 
 uniuno::AsyncResult<void> BootManager::bootPollFn() {
     if (state_ == BootState::CONNECT_WIFI) {
@@ -16,7 +13,7 @@ uniuno::AsyncResult<void> BootManager::bootPollFn() {
         if (UNLIKELY(res.is_rejected())) return uniuno::AsyncResult<void>::reject(*res.get_error());
         if (LIKELY(res.is_resolved())) {
             INFO("[Boot] WiFi Connected. Boot Tasks Complete.");
-            
+
             NetworkStatusEvent netEvt{true};
             ctx_.eventBus->dispatch(netEvt);
 
@@ -44,7 +41,7 @@ void BootManager::startBootSequenceAsync(BootContext ctx) {
 
     // بارگذاری بلافاصله تنظیمات از NVS هنگام شروع بوت (آفلاین بوت کاملاً ایزوله از شبکه)
     INFO("[Boot] Booting up... Loading config from NVS immediately.");
-    ParseResult nvsResult = {}; // Zero-initialize to avoid garbage memory
+    ParseResult nvsResult = {};  // Zero-initialize to avoid garbage memory
     if (ctx_.segmentStorage != nullptr && ctx_.segmentStorage->loadSegmentConfig(nvsResult)) {
         int applied = ConfigApplier::apply(nvsResult, ctx_.pinManager);
         ctx_.pinManager->printStatus();
@@ -53,7 +50,8 @@ void BootManager::startBootSequenceAsync(BootContext ctx) {
         Serial.println("==========================================");
         Serial.println("  Instant Boot — Config loaded from NVS   ");
         Serial.println("==========================================");
-        // نکته: رویداد خالی با wifiCount=0 به EventBus ارسال نمی‌شود تا NVS پاک نشود.
+        // نکته: رویداد خالی با wifiCount=0 به EventBus ارسال نمی‌شود تا NVS پاک
+        // نشود.
     } else {
         WARNING("[Boot] NVS empty or storage unavailable. No configuration loaded. Please push config.");
     }
@@ -61,7 +59,7 @@ void BootManager::startBootSequenceAsync(BootContext ctx) {
     state_ = BootState::CONNECT_WIFI;
     INFO("[BootManager] Starting WiFi connection (using configured APs)...");
     wifiFut_ = ctx_.network->connectAsync();
-    
+
     // We bind poll and error functions to this instance for executor
     auto bootFuture = uniuno::create_future([this]() { return this->bootPollFn(); });
     ctx_.executor->execute(bootFuture, [this](uniuno::Error e) { this->bootErrorFn(e); });

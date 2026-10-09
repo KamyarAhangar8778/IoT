@@ -5,15 +5,18 @@
 
 /**
  * @brief فلگ فعال/غیرفعال‌سازی حالت Fallback AP
- * در صورتی که 1 باشد، هنگام عدم اتصال به کاندیداهای وای‌فای، یک اکسس‌پوینت برای کانفیگ بالا می‌آید.
- * در صورتی که 0 باشد، قابلیت غیرفعال است و رفتار قبلی (تلاش مجدد/ریستارت) اعمال می‌شود.
+ * در صورتی که 1 باشد، هنگام عدم اتصال به کاندیداهای وای‌فای، یک
+ * اکسس‌پوینت برای کانفیگ بالا
+ * می‌آید. در صورتی که 0 باشد، قابلیت غیرفعال است و رفتار قبلی (تلاش
+ * مجدد/ریستارت) اعمال می‌شود.
  */
 #ifndef ENABLE_FALLBACK_AP
 #define ENABLE_FALLBACK_AP 1
 #endif
 
 #define FALLBACK_AP_SSID "Achaemenid-Setup"
-#define FALLBACK_AP_PASS "" // اکسس‌پوینت باز برای سهولت در اتصال و اتصال اولیه سریع
+#define FALLBACK_AP_PASS                                                                                               \
+    ""  // اکسس‌پوینت باز برای سهولت در اتصال و اتصال اولیه سریع
 
 namespace uniuno {
 
@@ -40,6 +43,6 @@ public:
     static void stop();
 };
 
-} // namespace uniuno
+}  // namespace uniuno
 
-#endif // FALLBACK_AP_H
+#endif  // FALLBACK_AP_H

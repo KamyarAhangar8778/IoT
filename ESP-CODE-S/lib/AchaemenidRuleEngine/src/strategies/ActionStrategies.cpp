@@ -25,10 +25,10 @@ void DelayedActionStrategy::execute(const RuleAction& act, int sourcePin, RuleCo
     bool aState = act.actionState;
     int actDelay = act.delay;
     INFOF("[Rule] Executing AFTER_DELAY action: Set Pin %d to %s after %ds", tPin, aState ? "HIGH" : "LOW", actDelay);
-    
+
     if (ctx.appTimer != nullptr && actDelay > 0 && actDelay <= 60) {
         ctx.pinManager->setPendingRuleActionState(tPin, aState);
-        uniuno::TimerHandle newTimer = ctx.appTimer->setTimeout([](){}, actDelay * 1000);
+        uniuno::TimerHandle newTimer = ctx.appTimer->setTimeout([]() {}, actDelay * 1000);
         ctx.pinManager->setRuleActionTimerIdByPin(tPin, newTimer);
     } else {
         applyState(tPin, aState, ctx);
@@ -40,14 +40,14 @@ void DurationActionStrategy::execute(const RuleAction& act, int sourcePin, RuleC
     bool aState = act.actionState;
     int actDelay = act.delay;
     INFOF("[Rule] Executing FOR_DURATION action: Set Pin %d to %s for %ds", tPin, aState ? "HIGH" : "LOW", actDelay);
-    
-    applyState(tPin, aState, ctx); // Apply immediately
+
+    applyState(tPin, aState, ctx);  // Apply immediately
     if (ctx.appTimer != nullptr && actDelay > 0 && actDelay <= 60) {
-        ctx.pinManager->setPendingRuleActionState(tPin, !aState); // Reverse state after duration
-        uniuno::TimerHandle newTimer = ctx.appTimer->setTimeout([](){}, actDelay * 1000);
+        ctx.pinManager->setPendingRuleActionState(tPin, !aState);  // Reverse state after duration
+        uniuno::TimerHandle newTimer = ctx.appTimer->setTimeout([]() {}, actDelay * 1000);
         ctx.pinManager->setRuleActionTimerIdByPin(tPin, newTimer);
     }
 }
 
-} // namespace rules
-} // namespace uniuno
+}  // namespace rules
+}  // namespace uniuno

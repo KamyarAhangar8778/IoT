@@ -23,8 +23,7 @@ public:
     MqttOutbox() : count_(0), head_(0), tail_(0), data_used_(0) {}
 
     /// Store a message for (re)transmission. Returns slot index or -1 if full.
-    int32_t store(uint8_t qos, bool retain, bool dup, uint16_t packet_id,
-                  const char* topic, uint16_t topic_len,
+    int32_t store(uint8_t qos, bool retain, bool dup, uint16_t packet_id, const char* topic, uint16_t topic_len,
                   const uint8_t* payload, uint16_t payload_len) {
         if (UNLIKELY(count_ >= Capacity)) return -1;
         if (UNLIKELY(data_used_ + topic_len + payload_len > DataCap)) return -1;
@@ -36,11 +35,7 @@ public:
         data_used_ += topic_len + payload_len;
 
         uint8_t slot = tail_;
-        entries_[slot] = OutboxEntry{
-            packet_id, qos, retain, dup,
-            t_off, p_off, topic_len, payload_len,
-            0, true
-        };
+        entries_[slot] = OutboxEntry{packet_id, qos, retain, dup, t_off, p_off, topic_len, payload_len, 0, true};
         tail_ = (tail_ + 1) % Capacity;
         count_++;
         return slot;
@@ -90,7 +85,12 @@ public:
     const uint8_t* topicOf(const OutboxEntry& e) const { return &data_[e.topic_offset]; }
     const uint8_t* payloadOf(const OutboxEntry& e) const { return &data_[e.payload_offset]; }
 
-    void clear() { count_ = 0; head_ = 0; tail_ = 0; data_used_ = 0; }
+    void clear() {
+        count_ = 0;
+        head_ = 0;
+        tail_ = 0;
+        data_used_ = 0;
+    }
 
 private:
     static constexpr uint32_t RETRY_MS = 5000;
@@ -111,8 +111,11 @@ private:
             if (entries_[j].payload_offset > start) entries_[j].payload_offset -= freed;
         }
         // Remove slot from ring
-        if (idx == head_) { head_ = (head_ + 1) % Capacity; }
-        else if (idx == (tail_ + Capacity - 1) % Capacity) { tail_ = idx; }
+        if (idx == head_) {
+            head_ = (head_ + 1) % Capacity;
+        } else if (idx == (tail_ + Capacity - 1) % Capacity) {
+            tail_ = idx;
+        }
         count_--;
     }
 
@@ -128,5 +131,5 @@ private:
     uint16_t data_used_;
 };
 
-} // namespace mqtt
-} // namespace uniuno
+}  // namespace mqtt
+}  // namespace uniuno

@@ -27,14 +27,14 @@ void ArrayBase::freeHeap(void* old_data) {
 
 void IRAM_ATTR ArrayBase::reserve_pod(std::size_t new_cap, std::size_t elem_size) {
     if (fixed_capacity_ || UNLIKELY(new_cap <= capacity_)) return;
-    
+
     if (is_heap_) {
 #ifdef ESP32
         void* new_data = heap_caps_realloc(data_, new_cap * elem_size, MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL);
 #else
         void* new_data = std::realloc(data_, new_cap * elem_size);
 #endif
-        if (!new_data) return; // Out of memory
+        if (!new_data) return;  // Out of memory
         data_ = new_data;
         capacity_ = new_cap;
     } else {
@@ -43,12 +43,12 @@ void IRAM_ATTR ArrayBase::reserve_pod(std::size_t new_cap, std::size_t elem_size
 #else
         void* new_data = std::malloc(new_cap * elem_size);
 #endif
-        if (!new_data) return; // Out of memory
-        
+        if (!new_data) return;  // Out of memory
+
         if (size_ > 0) {
             std::memcpy(new_data, data_, size_ * elem_size);
         }
-        
+
         data_ = new_data;
         capacity_ = new_cap;
         is_heap_ = true;
@@ -57,7 +57,7 @@ void IRAM_ATTR ArrayBase::reserve_pod(std::size_t new_cap, std::size_t elem_size
 
 void IRAM_ATTR ArrayBase::erase_pod(std::size_t index, std::size_t elem_size) {
     if (UNLIKELY(index >= size_)) return;
-    
+
     if (index < size_ - 1) {
         char* dst = static_cast<char*>(data_) + (index * elem_size);
         const char* src = static_cast<char*>(data_) + ((index + 1) * elem_size);
@@ -80,16 +80,16 @@ bool IRAM_ATTR ArrayBase::insert_pod(std::size_t index, const void* value, std::
     if (UNLIKELY(size_ >= capacity_)) {
         if (fixed_capacity_) return false;
         reserve_pod(capacity_ * 2, elem_size);
-        if (size_ >= capacity_) return false; // malloc failed
+        if (size_ >= capacity_) return false;  // malloc failed
     }
-    
+
     char* dst = static_cast<char*>(data_) + ((index + 1) * elem_size);
     const char* src = static_cast<char*>(data_) + (index * elem_size);
     std::memmove(dst, src, (size_ - index) * elem_size);
-    
+
     std::memcpy(static_cast<char*>(data_) + (index * elem_size), value, elem_size);
     size_++;
     return true;
 }
 
-} // namespace uniuno
+}  // namespace uniuno

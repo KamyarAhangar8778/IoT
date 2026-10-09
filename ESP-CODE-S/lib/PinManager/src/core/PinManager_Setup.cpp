@@ -27,7 +27,7 @@ bool PinManager::addSegment(const char* id, SegmentType type, int pin, int autoO
     entry->idHash = 0;
 #endif
     entry->type = type;
-    entry->pinNumber   = pin;
+    entry->pinNumber = pin;
     entry->autoOffDelay = autoOffDelay;
     entry->autoOffTimer = uniuno::TimerHandle();
     entry->cloudSyncTimer = uniuno::TimerHandle();
@@ -36,8 +36,8 @@ bool PinManager::addSegment(const char* id, SegmentType type, int pin, int autoO
     entry->pendingRuleActionState = false;
     entry->pendingHoldAction = RuleAction();
     entry->isHandled = false;
-    entry->rule        = rule;
-    
+    entry->rule = rule;
+
     if (type == SegmentType::Input) {
         pinMode(pin, INPUT_PULLUP);
         entry->lastInputState = digitalRead(pin) == HIGH;
@@ -47,11 +47,12 @@ bool PinManager::addSegment(const char* id, SegmentType type, int pin, int autoO
         entry->gpio.begin();
         entry->hasGpio = true;
     }
-    
+
     _registry.mapPin(pin, slot);
     entry->active = true;
-    
-    INFOF("[PinManager] Added segment '%s' on pin %d (Type: %s)", id, pin, (type == SegmentType::Input ? "input" : "output"));
+
+    INFOF("[PinManager] Added segment '%s' on pin %d (Type: %s)", id, pin,
+          (type == SegmentType::Input ? "input" : "output"));
     _stateManager.rebuildInputCache();
     return true;
 }
@@ -62,7 +63,7 @@ bool PinManager::removeSegment(const char* id) {
         WARNINGF("[PinManager] Segment '%s' not found.", id);
         return false;
     }
-    
+
     PinEntry* entry = _registry.getEntryByIndex(idx);
     if (!entry) return false;
 
@@ -74,13 +75,13 @@ bool PinManager::removeSegment(const char* id) {
     entry->cloudSyncTimer.cancel();
     entry->ruleActionTimer.cancel();
     entry->holdTimer.cancel();
-    
+
     _registry.unmapPin(entry->pinNumber);
 
-    entry->active    = false;
+    entry->active = false;
     entry->pinNumber = -1;
     entry->segmentId[0] = '\0';
-    entry->idHash    = 0;
+    entry->idHash = 0;
     entry->autoOffDelay = 0;
     entry->autoOffTimer = uniuno::TimerHandle();
     entry->cloudSyncTimer = uniuno::TimerHandle();
@@ -90,7 +91,7 @@ bool PinManager::removeSegment(const char* id) {
     entry->pendingHoldAction = RuleAction();
     entry->holdTimer = uniuno::TimerHandle();
     entry->isHandled = false;
-    
+
     INFOF("[PinManager] Removed segment '%s'", id);
     _stateManager.rebuildInputCache();
     return true;

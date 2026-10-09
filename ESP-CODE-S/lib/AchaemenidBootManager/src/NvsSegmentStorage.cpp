@@ -46,20 +46,20 @@ bool NvsSegmentStorage::loadSegmentConfig(ParseResult& out) {
     out.count = 0;
     for (int i = 0; i < count && i < MAX_SEGMENTS; i++) {
         String prefix = "s" + String(i);
-        String id   = segPrefs.getString((prefix + "id").c_str(), "");
+        String id = segPrefs.getString((prefix + "id").c_str(), "");
         String type = segPrefs.getString((prefix + "tp").c_str(), "");
-        int    pin  = segPrefs.getInt((prefix + "pn").c_str(), -1);
-        int    ao   = segPrefs.getInt((prefix + "ao").c_str(), 0);
+        int pin = segPrefs.getInt((prefix + "pn").c_str(), -1);
+        int ao = segPrefs.getInt((prefix + "ao").c_str(), 0);
 
         if (id.length() > 0 && pin >= 0) {
-            strncpy(out.segments[i].id,   id.c_str(),   sizeof(out.segments[i].id) - 1);
+            strncpy(out.segments[i].id, id.c_str(), sizeof(out.segments[i].id) - 1);
             out.segments[i].id[sizeof(out.segments[i].id) - 1] = '\0';
             strncpy(out.segments[i].type, type.c_str(), sizeof(out.segments[i].type) - 1);
             out.segments[i].type[sizeof(out.segments[i].type) - 1] = '\0';
-            out.segments[i].pin          = pin;
+            out.segments[i].pin = pin;
             out.segments[i].autoOffDelay = ao;
-            out.segments[i].value        = false;
-            out.segments[i].valid        = true;
+            out.segments[i].value = false;
+            out.segments[i].valid = true;
             out.count++;
         }
     }
@@ -70,4 +70,4 @@ bool NvsSegmentStorage::loadSegmentConfig(ParseResult& out) {
     return out.success;
 }
 
-} // namespace uniuno
+}  // namespace uniuno

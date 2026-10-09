@@ -10,22 +10,20 @@ AchaemenidMQTT::AchaemenidMQTT() : _connManager(this) {
     mac.replace(":", "");
     _config.clientId = ("ESP32-" + mac).c_str();
 
-    _mqttClient.onConnect([this](bool sessionPresent) {
-        this->_onMqttConnect(sessionPresent);
-    });
+    _mqttClient.onConnect([this](bool sessionPresent) { this->_onMqttConnect(sessionPresent); });
 
-    _mqttClient.onDisconnect([this](uniuno::mqtt::DisconnectReason reason) {
-        this->_onMqttDisconnect(reason);
-    });
+    _mqttClient.onDisconnect([this](uniuno::mqtt::DisconnectReason reason) { this->_onMqttDisconnect(reason); });
 
-    _mqttClient.onMessage([this](const char* topic, const uint8_t* payload, size_t len, uniuno::mqtt::MessageProperties props) {
-        this->_onMqttMessage(topic, payload, props, len);
-    });
+    _mqttClient.onMessage(
+        [this](const char* topic, const uint8_t* payload, size_t len, uniuno::mqtt::MessageProperties props) {
+            this->_onMqttMessage(topic, payload, props, len);
+        });
 }
 
 AchaemenidMQTT::~AchaemenidMQTT() {}
 
-void AchaemenidMQTT::begin(const String& server, uint16_t port, const String& baseTopic, uint8_t qos, const String& user, const String& password) {
+void AchaemenidMQTT::begin(const String& server, uint16_t port, const String& baseTopic, uint8_t qos,
+                           const String& user, const String& password) {
     _config.server = server.c_str();
     _config.port = port;
     _config.baseTopic = baseTopic.c_str();
@@ -34,13 +32,13 @@ void AchaemenidMQTT::begin(const String& server, uint16_t port, const String& ba
     _config.password = password.c_str();
     _config.willTopic = (baseTopic + "/Status").c_str();
     _config.commandTopic = (baseTopic + "/Command").c_str();
-    
+
     if (_config.clientId.empty() || _config.clientId == "ESP32-" || _config.clientId == "ESP32-000000000000") {
         String mac = WiFi.macAddress();
         mac.replace(":", "");
         _config.clientId = ("ESP32-" + mac).c_str();
     }
-    
+
     _mqttClient.setServer(_config.server.c_str(), _config.port);
     _mqttClient.setClientId(_config.clientId.c_str());
 
@@ -93,10 +91,11 @@ bool AchaemenidMQTT::publish(const String& topic, const String& payload, bool re
 void AchaemenidMQTT::_onMqttConnect(bool sessionPresent) {
     Serial.println("[MQTT] Connected to MQTT broker!");
     _connManager.onConnect();
-    
+
     IPAddress ip = WiFi.localIP();
     char onlinePayload[64];
-    snprintf(onlinePayload, sizeof(onlinePayload), "{\"status\":\"online\",\"ip\":\"%d.%d.%d.%d\"}", ip[0], ip[1], ip[2], ip[3]);
+    snprintf(onlinePayload, sizeof(onlinePayload), "{\"status\":\"online\",\"ip\":\"%d.%d.%d.%d\"}", ip[0], ip[1],
+             ip[2], ip[3]);
     publish(_config.willTopic.c_str(), onlinePayload, true);
 
     if (_config.commandTopic.size() == 0 && _config.baseTopic.size() > 0) {
@@ -117,15 +116,16 @@ void AchaemenidMQTT::_onMqttDisconnect(uniuno::mqtt::DisconnectReason reason) {
     _connManager.onDisconnect(reason);
 }
 
-HOT_PATH IRAM_ATTR void AchaemenidMQTT::_onMqttMessage(const char* topic, const uint8_t* payload, uniuno::mqtt::MessageProperties props, size_t len) {
+HOT_PATH IRAM_ATTR void AchaemenidMQTT::_onMqttMessage(const char* topic, const uint8_t* payload,
+                                                       uniuno::mqtt::MessageProperties props, size_t len) {
     (void)props;
     if (len > 0) {
-        Serial.printf("[MQTT] Incoming message on '%s' (len=%u, cmd=0x%02X)\n",
-                      topic ? topic : "?", (unsigned int)len, payload ? payload[0] : 0);
+        Serial.printf("[MQTT] Incoming message on '%s' (len=%u, cmd=0x%02X)\n", topic ? topic : "?", (unsigned int)len,
+                      payload ? payload[0] : 0);
     }
     if (LIKELY(_messageCallback)) {
         _messageCallback(payload, len);
     }
 }
 
-} // namespace uniuno
+}  // namespace uniuno

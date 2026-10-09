@@ -44,9 +44,8 @@ void FallbackAP::start() {
     delay(100);
 
     WiFi.mode(WIFI_AP);
-    bool apCreated = (strlen(FALLBACK_AP_PASS) > 0)
-        ? WiFi.softAP(FALLBACK_AP_SSID, FALLBACK_AP_PASS)
-        : WiFi.softAP(FALLBACK_AP_SSID);
+    bool apCreated = (strlen(FALLBACK_AP_PASS) > 0) ? WiFi.softAP(FALLBACK_AP_SSID, FALLBACK_AP_PASS)
+                                                    : WiFi.softAP(FALLBACK_AP_SSID);
 
     if (!apCreated) {
         Serial.println("[FallbackAP] ERROR: Failed to start SoftAP!");
@@ -192,16 +191,21 @@ void FallbackAP::handleClient() {
             Serial.println("[FallbackAP] Credentials successfully saved to NVS!");
             Serial.println("[FallbackAP] Restarting ESP32 in 1.5 seconds...");
 
-            String resp = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nConnection: close\r\n\r\n"
-                          "<!DOCTYPE html><html dir='rtl' lang='fa'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'>"
-                          "<title>سامانه مرزی پاسارگاد</title><style>"
-                          "body{font-family:sans-serif;background:#0d1117;color:#e6edf3;text-align:center;padding:40px 20px;}"
-                          ".card{background:#161b22;padding:30px;border-radius:16px;max-width:400px;margin:auto;border:1px solid #30363d;}"
-                          "h2{color:#f59e0b;}p{color:#8b949e;line-height:1.6;}"
-                          "</style></head><body><div class='card'>"
-                          "<h2>تنظیمات با موفقیت ذخیره شد!</h2>"
-                          "<p>دستگاه تا چند ثانیه دیگر ریستارت شده و به شبکه <b>" + ssid + "</b> متصل خواهد شد.</p>"
-                          "</div></body></html>";
+            String resp =
+                "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nConnection: close\r\n\r\n"
+                "<!DOCTYPE html><html dir='rtl' lang='fa'><head><meta charset='UTF-8'><meta name='viewport' "
+                "content='width=device-width, initial-scale=1.0'>"
+                "<title>سامانه مرزی پاسارگاد</title><style>"
+                "body{font-family:sans-serif;background:#0d1117;color:#e6edf3;text-align:center;padding:40px 20px;}"
+                ".card{background:#161b22;padding:30px;border-radius:16px;max-width:400px;margin:auto;border:1px solid "
+                "#30363d;}"
+                "h2{color:#f59e0b;}p{color:#8b949e;line-height:1.6;}"
+                "</style></head><body><div class='card'>"
+                "<h2>تنظیمات با موفقیت ذخیره شد!</h2>"
+                "<p>دستگاه تا چند ثانیه دیگر ریستارت شده و به شبکه <b>" +
+                ssid +
+                "</b> متصل خواهد شد.</p>"
+                "</div></body></html>";
             client.print(resp);
             client.flush();
             client.stop();
@@ -212,34 +216,44 @@ void FallbackAP::handleClient() {
     }
 
     // Serve HTML Setup Page
-    String html = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nConnection: close\r\n\r\n"
-                  "<!DOCTYPE html><html dir='rtl' lang='fa'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'>"
-                  "<title>تنظیمات وای‌فای سامانه پاسارگاد</title><style>"
-                  "body{font-family:sans-serif;background:#0b0f19;color:#e6edf3;margin:0;padding:24px 16px;display:flex;justify-content:center;}"
-                  ".box{background:#161e2e;padding:28px;border-radius:20px;width:100%;max-width:380px;border:1px solid #2d3748;box-shadow:0 10px 25px rgba(0,0,0,0.5);}"
-                  "h2{color:#fbbf24;font-size:20px;margin-bottom:8px;}"
-                  "p{color:#94a3b8;font-size:13px;line-height:1.5;margin-bottom:20px;}"
-                  "label{display:block;text-align:right;font-size:13px;color:#cbd5e1;margin-bottom:6px;}"
-                  "input{width:100%;box-sizing:border-box;padding:12px 14px;margin-bottom:18px;border-radius:10px;border:1px solid #334155;background:#0f172a;color:#fff;font-size:14px;outline:none;}"
-                  "input:focus{border-color:#fbbf24;}"
-                  "button{width:100%;padding:13px;border-radius:10px;border:none;background:#f59e0b;color:#0f172a;font-weight:bold;font-size:15px;cursor:pointer;transition:background 0.2s;}"
-                  "button:hover{background:#d97706;}"
-                  ".badge{display:inline-block;padding:3px 8px;border-radius:6px;background:#1e293b;color:#38bdf8;font-size:11px;margin-bottom:14px;}"
-                  "</style></head><body><div class='box'>"
-                  "<div class='badge'>حالت اضطراری پیکربندی</div>"
-                  "<h2>پاسارگاد IoT - اتصال وای‌فای</h2>"
-                  "<p>ارتباط با مودم‌های قبلی برقرار نشد. لطفاً نام و رمز عبور مودم یا هات‌اسپات خود را وارد کنید.</p>"
-                  "<form action='/save' method='GET'>"
-                  "<label>نام شبکه وای‌فای (SSID):</label>"
-                  "<input type='text' name='ssid' required placeholder='SSID مودم شما'>"
-                  "<label>رمز عبور (Password):</label>"
-                  "<input type='password' name='pass' placeholder='رمز وای‌فای'>"
-                  "<button type='submit'>ذخیره و اتصال به مودم</button>"
-                  "</form></div></body></html>";
+    String html =
+        "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nConnection: close\r\n\r\n"
+        "<!DOCTYPE html><html dir='rtl' lang='fa'><head><meta charset='UTF-8'><meta name='viewport' "
+        "content='width=device-width, initial-scale=1.0'>"
+        "<title>تنظیمات وای‌فای سامانه پاسارگاد</title><style>"
+        "body{font-family:sans-serif;background:#0b0f19;color:#e6edf3;margin:0;padding:24px "
+        "16px;display:flex;justify-content:center;}"
+        ".box{background:#161e2e;padding:28px;border-radius:20px;width:100%;max-width:380px;border:1px solid "
+        "#2d3748;box-shadow:0 10px 25px rgba(0,0,0,0.5);}"
+        "h2{color:#fbbf24;font-size:20px;margin-bottom:8px;}"
+        "p{color:#94a3b8;font-size:13px;line-height:1.5;margin-bottom:20px;}"
+        "label{display:block;text-align:right;font-size:13px;color:#cbd5e1;margin-bottom:6px;}"
+        "input{width:100%;box-sizing:border-box;padding:12px 14px;margin-bottom:18px;border-radius:10px;border:1px "
+        "solid #334155;background:#0f172a;color:#fff;font-size:14px;outline:none;}"
+        "input:focus{border-color:#fbbf24;}"
+        "button{width:100%;padding:13px;border-radius:10px;border:none;background:#f59e0b;color:#0f172a;font-weight:"
+        "bold;font-size:15px;cursor:pointer;transition:background 0.2s;}"
+        "button:hover{background:#d97706;}"
+        ".badge{display:inline-block;padding:3px "
+        "8px;border-radius:6px;background:#1e293b;color:#38bdf8;font-size:11px;margin-bottom:14px;}"
+        "</style></head><body><div class='box'>"
+        "<div class='badge'>حالت اضطراری پیکربندی</div>"
+        "<h2>پاسارگاد IoT - اتصال وای‌فای</h2>"
+        "<p>ارتباط با مودم‌های قبلی برقرار نشد. لطفاً نام و رمز عبور مودم یا هات‌اسپات خود "
+        "را "
+        "وارد "
+        "کنید.</p>"
+        "<form action='/save' method='GET'>"
+        "<label>نام شبکه وای‌فای (SSID):</label>"
+        "<input type='text' name='ssid' required placeholder='SSID مودم شما'>"
+        "<label>رمز عبور (Password):</label>"
+        "<input type='password' name='pass' placeholder='رمز وای‌فای'>"
+        "<button type='submit'>ذخیره و اتصال به مودم</button>"
+        "</form></div></body></html>";
 
     client.print(html);
     client.flush();
     client.stop();
 }
 
-} // namespace uniuno
+}  // namespace uniuno

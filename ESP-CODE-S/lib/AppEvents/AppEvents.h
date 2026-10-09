@@ -23,7 +23,7 @@
  */
 struct MqttCommandEvent {
     static constexpr const char* Name = "mqtt.command";
-    const char* payload;  /**< Raw JSON payload string */
+    const char* payload; /**< Raw JSON payload string */
 };
 
 /**
@@ -34,9 +34,9 @@ struct MqttCommandEvent {
  */
 struct PinStateChangeRequestEvent {
     static constexpr const char* Name = "pin.change_request";
-    int pin;       /**< Physical GPIO pin number */
-    bool state;    /**< Desired state (true=ON, false=OFF) */
-    int auto_off;  /**< Time in seconds to auto-off, -1 for none */
+    int pin;      /**< Physical GPIO pin number */
+    bool state;   /**< Desired state (true=ON, false=OFF) */
+    int auto_off; /**< Time in seconds to auto-off, -1 for none */
 
     PinStateChangeRequestEvent(int p, bool s, int a = -1) : pin(p), state(s), auto_off(a) {}
 };
@@ -47,9 +47,9 @@ struct PinStateChangeRequestEvent {
  */
 struct SegmentAddRequestEvent {
     static constexpr const char* Name = "segment.add_request";
-    const char* id;    /**< Segment unique identifier */
-    const char* type;  /**< Segment type (e.g., "gpio_toggle") */
-    int pin;           /**< Physical GPIO pin number */
+    const char* id;   /**< Segment unique identifier */
+    const char* type; /**< Segment type (e.g., "gpio_toggle") */
+    int pin;          /**< Physical GPIO pin number */
 };
 
 /**
@@ -58,7 +58,7 @@ struct SegmentAddRequestEvent {
  */
 struct SegmentRemoveRequestEvent {
     static constexpr const char* Name = "segment.remove_request";
-    const char* id;    /**< Segment unique identifier to remove */
+    const char* id; /**< Segment unique identifier to remove */
 };
 
 /**
@@ -79,8 +79,8 @@ struct SegmentUpdateRuleRequestEvent {
  */
 struct PinStateChangedEvent {
     static constexpr const char* Name = "pin.state_changed";
-    int pin;       /**< Physical GPIO pin number */
-    bool state;    /**< New state (true=ON, false=OFF) */
+    int pin;             /**< Physical GPIO pin number */
+    bool state;          /**< New state (true=ON, false=OFF) */
     bool syncCloudflare; /**< Should ESP32 send this to Cloudflare? */
 
     PinStateChangedEvent(int p, bool s, bool sync = true) : pin(p), state(s), syncCloudflare(sync) {}
@@ -92,11 +92,11 @@ struct PinStateChangedEvent {
  */
 struct ConfigLoadedEvent {
     static constexpr const char* Name = "config.loaded";
-    int pinCount;  /**< Number of pins configured */
-    MqttConfig mqtt; /**< MQTT configuration parsed from server */
+    int pinCount;                              /**< Number of pins configured */
+    MqttConfig mqtt;                           /**< MQTT configuration parsed from server */
     WifiNetworkConfig wifi[MAX_WIFI_NETWORKS]; /**< WiFi configuration parsed from server */
     int wifiCount;
-    
+
     ConfigLoadedEvent() : pinCount(0), wifiCount(0) {}
 };
 
@@ -106,7 +106,7 @@ struct ConfigLoadedEvent {
  */
 struct NetworkStatusEvent {
     static constexpr const char* Name = "network.status";
-    bool connected;  /**< True if WiFi is connected */
+    bool connected; /**< True if WiFi is connected */
 };
 
 /**
@@ -146,4 +146,4 @@ struct CloudSyncRequestEvent {
     CloudSyncRequestEvent(int p, bool s) : pin(p), state(s) {}
 };
 
-#endif // APP_EVENTS_H
+#endif  // APP_EVENTS_H

@@ -15,18 +15,19 @@ public:
     AchaemenidMQTT();
     ~AchaemenidMQTT();
 
-    void begin(const String& server, uint16_t port, const String& baseTopic, uint8_t qos, const String& user, const String& password);
+    void begin(const String& server, uint16_t port, const String& baseTopic, uint8_t qos, const String& user,
+               const String& password);
     void connect();
     void loop();
-    
+
     // Kept for backward compatibility but empty (Zero-Latency mode)
-    inline void processQueue() {} 
+    inline void processQueue() {}
 
     String getBaseTopic() const { return String(_config.baseTopic.c_str()); }
 
     bool publish(const String& topic, const uint8_t* payload, size_t length, bool retained = false);
     bool publish(const String& topic, const String& payload, bool retained = false);
-    
+
     void setCallback(MessageCallback callback);
     void subscribe(const String& topic);
 
@@ -41,4 +42,4 @@ private:
     void _onMqttMessage(const char* topic, const uint8_t* payload, uniuno::mqtt::MessageProperties props, size_t len);
 };
 
-} // namespace uniuno
+}  // namespace uniuno

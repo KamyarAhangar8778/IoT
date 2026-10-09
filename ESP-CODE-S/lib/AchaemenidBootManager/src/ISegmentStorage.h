@@ -22,4 +22,4 @@ public:
     virtual bool loadSegmentConfig(ParseResult& out) = 0;
 };
 
-} // namespace uniuno
+}  // namespace uniuno

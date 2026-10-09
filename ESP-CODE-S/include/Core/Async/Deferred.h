@@ -10,7 +10,7 @@ namespace uniuno {
  * @brief Deferred is a Standalone Promise object.
  * It allows creating a Future that can be resolved or rejected manually
  * from outside (e.g. from an ISR, Timer, or another thread).
- * 
+ *
  * @tparam I The input type of the future.
  * @tparam O The output type of the future.
  * @tparam E The error type of the future.
@@ -36,9 +36,7 @@ public:
 
     /** @brief Gets a Future linked to this Deferred object. */
     Future<I, O, E> get_future() const {
-        return Future<I, O, E>([state = this->state](I) mutable -> AsyncResult<O, E> {
-            return *state;
-        });
+        return Future<I, O, E>([state = this->state](I) mutable -> AsyncResult<O, E> { return *state; });
     }
 
 private:
@@ -66,9 +64,7 @@ public:
     }
 
     Future<void, O, E> get_future() const {
-        return Future<void, O, E>([state = this->state]() mutable -> AsyncResult<O, E> {
-            return *state;
-        });
+        return Future<void, O, E>([state = this->state]() mutable -> AsyncResult<O, E> { return *state; });
     }
 
 private:
@@ -96,13 +92,11 @@ public:
     }
 
     Future<void, void, E> get_future() const {
-        return Future<void, void, E>([state = this->state]() mutable -> AsyncResult<void, E> {
-            return *state;
-        });
+        return Future<void, void, E>([state = this->state]() mutable -> AsyncResult<void, E> { return *state; });
     }
 
 private:
     AtomicSharedPtr<AsyncResult<void, E>> state;
 };
 
-} // namespace uniuno
+}  // namespace uniuno

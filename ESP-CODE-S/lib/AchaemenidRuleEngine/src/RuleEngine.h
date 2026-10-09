@@ -28,4 +28,4 @@ private:
     RuleContext _ctx;
 };
 
-#endif // RULE_ENGINE_H
+#endif  // RULE_ENGINE_H

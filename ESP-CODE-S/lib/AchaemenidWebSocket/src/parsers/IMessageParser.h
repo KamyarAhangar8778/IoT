@@ -19,4 +19,4 @@ public:
     virtual void parseMessage(const websockets::WebsocketsMessage& message) = 0;
 };
 
-} // namespace uniuno
+}  // namespace uniuno

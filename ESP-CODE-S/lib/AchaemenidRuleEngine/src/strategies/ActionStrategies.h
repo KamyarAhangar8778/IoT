@@ -28,7 +28,7 @@ public:
     void execute(const RuleAction& act, int sourcePin, RuleContext& ctx) override;
 };
 
-} // namespace rules
-} // namespace uniuno
+}  // namespace rules
+}  // namespace uniuno
 
-#endif // ACTION_STRATEGIES_H
+#endif  // ACTION_STRATEGIES_H

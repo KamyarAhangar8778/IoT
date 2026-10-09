@@ -17,4 +17,4 @@ public:
     virtual bool parse(const char* payload, ParseResult& outResult) = 0;
 };
 
-} // namespace uniuno
+}  // namespace uniuno

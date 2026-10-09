@@ -16,4 +16,4 @@ private:
     std::function<String()> _stateProvider;
 };
 
-} // namespace uniuno
+}  // namespace uniuno

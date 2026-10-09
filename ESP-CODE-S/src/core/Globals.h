@@ -8,13 +8,12 @@
 #include <Events/EventDispatcher.h>
 #include <Core/Async/Executor.h>
 // Forward declarations
-namespace uniuno
-{
-    class AchaemenidWebSocketClient;
-    class AchaemenidWebSocketServer;
-    class MqttCommandDispatcher;
-    class ISegmentStorage;
-}
+namespace uniuno {
+class AchaemenidWebSocketClient;
+class AchaemenidWebSocketServer;
+class MqttCommandDispatcher;
+class ISegmentStorage;
+}  // namespace uniuno
 class BootManager;
 class RuleEngine;
 
@@ -50,4 +49,4 @@ extern bool ntpSynced;
 extern bool isDashboardOnline;
 extern uniuno::TimerHandle dashboardTimeoutTimer;
 
-#endif // GLOBALS_H
+#endif  // GLOBALS_H

@@ -94,4 +94,4 @@ private:
     int _pinToIndex[40];
 };
 
-#endif // PIN_REGISTRY_H
+#endif  // PIN_REGISTRY_H

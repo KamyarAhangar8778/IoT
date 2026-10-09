@@ -2,9 +2,9 @@
  * @file TimerBuilder.h
  * @brief Builder pattern for Timer configuration
  * @author uniuno
- * 
+ *
  * PURPOSE: Provide fluent API for Timer construction
- * 
+ *
  * USAGE:
  * @code
  *   Timer timer = TimerBuilder()
@@ -25,39 +25,40 @@ namespace uniuno {
  */
 class TimerBuilder {
 public:
-  TimerBuilder() 
-    : time_source_(millis)
+    TimerBuilder()
+        : time_source_(millis)
 #ifdef TIMER_EVENTS_ENABLED
-    , dispatcher_(nullptr)
+        , dispatcher_(nullptr)
 #endif
-  {}
+    {
+    }
 
-  TimerBuilder& withTimeSource(unsigned long (*source)()) {
-    time_source_ = source;
-    return *this;
-  }
+    TimerBuilder& withTimeSource(unsigned long (*source)()) {
+        time_source_ = source;
+        return *this;
+    }
 
 #ifdef TIMER_EVENTS_ENABLED
-  TimerBuilder& withEventDispatcher(EventDispatcher* dispatcher) {
-    dispatcher_ = dispatcher;
-    return *this;
-  }
+    TimerBuilder& withEventDispatcher(EventDispatcher* dispatcher) {
+        dispatcher_ = dispatcher;
+        return *this;
+    }
 #endif
 
-  Timer* build() {
-    TimerFeatures features;
+    Timer* build() {
+        TimerFeatures features;
 #ifdef TIMER_EVENTS_ENABLED
-    return new Timer(features, time_source_, dispatcher_);
+        return new Timer(features, time_source_, dispatcher_);
 #else
-    return new Timer(features, time_source_);
+        return new Timer(features, time_source_);
 #endif
-  }
+    }
 
 private:
-  unsigned long (*time_source_)();
+    unsigned long (*time_source_)();
 #ifdef TIMER_EVENTS_ENABLED
-  EventDispatcher* dispatcher_;
+    EventDispatcher* dispatcher_;
 #endif
 };
 
-} // namespace uniuno
+}  // namespace uniuno

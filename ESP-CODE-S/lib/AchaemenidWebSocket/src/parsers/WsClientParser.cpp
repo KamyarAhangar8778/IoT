@@ -40,8 +40,8 @@ HOT_PATH void WsClientParser::parseMessage(const websockets::WebsocketsMessage& 
             if (len >= 2 + (count * 2)) {
                 Serial.printf("[WebSocket] Batch Automation Triggered! Actions: %u\n", count);
                 for (uint8_t i = 0; i < count; ++i) {
-                    const int pin = static_cast<int>(static_cast<uint8_t>(data[2 + i*2]));
-                    const bool state = (static_cast<uint8_t>(data[3 + i*2]) != 0);
+                    const int pin = static_cast<int>(static_cast<uint8_t>(data[2 + i * 2]));
+                    const bool state = (static_cast<uint8_t>(data[3 + i * 2]) != 0);
                     PinStateChangeRequestEvent event{pin, state, 0};
                     _dispatcher->dispatch(event);
                 }
@@ -61,9 +61,9 @@ HOT_PATH void WsClientParser::parseMessage(const websockets::WebsocketsMessage& 
                 JsonObject states = doc["states"].as<JsonObject>();
                 for (JsonPair kv : states) {
 #if OPTIMIZE_WS_ZERO_ALLOC_PARSER
-                    int pin   = atoi(kv.key().c_str());
+                    int pin = atoi(kv.key().c_str());
 #else
-                    int pin   = String(kv.key().c_str()).toInt();
+                    int pin = String(kv.key().c_str()).toInt();
 #endif
                     bool state = kv.value().as<bool>();
                     PinStateChangeRequestEvent event{pin, state, 0};
@@ -77,4 +77,4 @@ HOT_PATH void WsClientParser::parseMessage(const websockets::WebsocketsMessage& 
     }
 }
 
-} // namespace uniuno
+}  // namespace uniuno

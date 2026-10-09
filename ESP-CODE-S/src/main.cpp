@@ -67,7 +67,7 @@ void setup() {
         }
     }
     INFOF("[System] Multi-AP setup ready with %d total candidate networks.", (int)::network->get_ap_count());
-    
+
     // Also restore MQTT if valid
     if (savedMqtt.valid) {
         mqttClient.begin(String(savedMqtt.host), savedMqtt.port, String(savedMqtt.baseTopic), savedMqtt.qos, "", "");
@@ -80,21 +80,13 @@ void setup() {
     }
 
     INFO("[System] Setup completed. Starting Async Boot Sequence...");
-    
+
     // Start Boot Sequence
     segmentStorage = new uniuno::NvsSegmentStorage();
     bootManager = new BootManager();
 
-    BootContext bootCtx = {
-        ::network,
-        &pinManager,
-        &executor,
-        &eventBus,
-        appTimer,
-        segmentStorage,
-        &configLoaded,
-        &rawConfigPayload
-    };
+    BootContext bootCtx = {::network, &pinManager,    &executor,     &eventBus,
+                           appTimer,  segmentStorage, &configLoaded, &rawConfigPayload};
     bootManager->startBootSequenceAsync(bootCtx);
 }
 

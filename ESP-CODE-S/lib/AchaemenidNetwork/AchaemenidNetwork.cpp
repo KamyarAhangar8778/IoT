@@ -29,14 +29,15 @@ size_t AchaemenidNetwork::get_ap_count() const {
 IRAM_ATTR Future<void, void, Error> AchaemenidNetwork::connectAsync() {
     _connected = false;
     INFO("[AchaemenidNetwork] Async connection to added SSIDs...");
-    
+
     // WiFi.setSleep(false) is already handled in ESP32WiFiAdapter::mode()
-    
+
     return _wifiConnector.connect().and_then([this]() {
         this->_connected = true;
         IPAddress ip = WiFi.localIP();
-        INFOF("[AchaemenidNetwork] Successfully connected to WiFi! Network: %s, IP: %d.%d.%d.%d", WiFi.SSID().c_str(), ip[0], ip[1], ip[2], ip[3]);
+        INFOF("[AchaemenidNetwork] Successfully connected to WiFi! Network: %s, IP: %d.%d.%d.%d", WiFi.SSID().c_str(),
+              ip[0], ip[1], ip[2], ip[3]);
     });
 }
 
-} // namespace uniuno
+}  // namespace uniuno

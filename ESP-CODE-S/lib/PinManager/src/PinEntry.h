@@ -6,21 +6,18 @@
 #include <AchaemenidConfigProtocol.h>
 #include <Timer/TimerHandle.h>
 
-enum class SegmentType : uint8_t {
-    Output,
-    Input
-};
+enum class SegmentType : uint8_t { Output, Input };
 
 struct PinEntry {
     // 32-byte arrays
     char segmentId[32];
     uint32_t idHash;
-    
+
     // Large structs/objects (ordered by typical descending size to minimize alignment padding)
     RuleConfig rule;
     RuleAction pendingHoldAction;
     GpioSwitch gpio;
-    
+
     uniuno::TimerHandle autoOffTimer;
     uniuno::TimerHandle cloudSyncTimer;
     uniuno::TimerHandle ruleActionTimer;
@@ -30,12 +27,12 @@ struct PinEntry {
     unsigned long stateStartTime;
     int pinNumber;
     int autoOffDelay;
-    
+
     // 1-byte types
     SegmentType type;
-    
+
     // Bitfields (Packed into a single byte)
-    bool hasGpio : 1; // flag to know if gpio is initialized
+    bool hasGpio : 1;  // flag to know if gpio is initialized
     bool lastInputState : 1;
     bool pendingRuleActionState : 1;
     bool isHandled : 1;

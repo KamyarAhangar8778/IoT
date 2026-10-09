@@ -26,8 +26,8 @@ struct MqttDisconnectedEvent {
 
 struct MqttMessageEvent {
     static constexpr const char* Name = "mqtt.message";
-    const char* topic;          // pointer into internal buffer (no copy)
-    const uint8_t* payload;     // pointer into internal buffer (no copy)
+    const char* topic;       // pointer into internal buffer (no copy)
+    const uint8_t* payload;  // pointer into internal buffer (no copy)
     size_t length;
     uint8_t qos;
     bool retain;
@@ -56,5 +56,5 @@ struct MqttKeepAliveTickEvent {
     uint32_t last_activity_ms;
 };
 
-} // namespace mqtt
-} // namespace uniuno
+}  // namespace mqtt
+}  // namespace uniuno

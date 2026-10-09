@@ -6,16 +6,16 @@ namespace uniuno {
 
 class Error : public ErrorBase {
 public:
-  Error() { this->err = "error"; }
+    Error() { this->err = "error"; }
 
-  Error(ErrorBase *err) { this->err = (const char *)err; }
+    Error(ErrorBase *err) { this->err = (const char *)err; }
 
-  Error(const char *err) { this->err = err; }
+    Error(const char *err) { this->err = err; }
 
-  operator const char *() override { return this->err; }
+    operator const char *() override { return this->err; }
 
 private:
-  const char *err;
+    const char *err;
 };
 
-} // namespace uniuno
+}  // namespace uniuno

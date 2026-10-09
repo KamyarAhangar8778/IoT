@@ -8,7 +8,7 @@ namespace uniuno {
 
 /**
  * @brief RAM-oriented fixed-size queue (replaces std::queue)
- * 
+ *
  * BENEFIT: No dynamic memory allocation, preventing heap fragmentation.
  * ARCHITECTURE: Circular ring buffer.
  */
@@ -16,10 +16,8 @@ template <typename T, size_t Capacity>
 class StaticQueue {
 public:
     StaticQueue() : head_(0), tail_(0), size_(0) {}
-    
-    ~StaticQueue() {
-        clear();
-    }
+
+    ~StaticQueue() { clear(); }
 
     void push(const T& value) {
         if (size_ < Capacity) {
@@ -37,7 +35,7 @@ public:
         }
     }
 
-    template<typename... Args>
+    template <typename... Args>
     void emplace(Args&&... args) {
         if (size_ < Capacity) {
             new (&buffer_[tail_]) T(std::forward<Args>(args)...);
@@ -54,13 +52,9 @@ public:
         }
     }
 
-    T& front() {
-        return *reinterpret_cast<T*>(&buffer_[head_]);
-    }
+    T& front() { return *reinterpret_cast<T*>(&buffer_[head_]); }
 
-    const T& front() const {
-        return *reinterpret_cast<const T*>(&buffer_[head_]);
-    }
+    const T& front() const { return *reinterpret_cast<const T*>(&buffer_[head_]); }
 
     T& back() {
         size_t last = (tail_ == 0) ? Capacity - 1 : tail_ - 1;
@@ -72,21 +66,13 @@ public:
         return *reinterpret_cast<const T*>(&buffer_[last]);
     }
 
-    bool empty() const {
-        return size_ == 0;
-    }
+    bool empty() const { return size_ == 0; }
 
-    bool full() const {
-        return size_ == Capacity;
-    }
+    bool full() const { return size_ == Capacity; }
 
-    size_t size() const {
-        return size_;
-    }
+    size_t size() const { return size_; }
 
-    size_t capacity() const {
-        return Capacity;
-    }
+    size_t capacity() const { return Capacity; }
 
     void clear() {
         while (!empty()) {
@@ -101,4 +87,4 @@ private:
     size_t size_;
 };
 
-} // namespace uniuno
+}  // namespace uniuno

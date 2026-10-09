@@ -65,5 +65,5 @@ private:
     uint32_t last_ping_ms_ = 0;
 };
 
-} // namespace mqtt
-} // namespace uniuno
+}  // namespace mqtt
+}  // namespace uniuno

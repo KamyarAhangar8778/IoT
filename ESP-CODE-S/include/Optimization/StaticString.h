@@ -8,15 +8,13 @@ namespace uniuno {
 
 /**
  * @brief RAM-oriented fixed-size string (replaces std::string)
- * 
+ *
  * BENEFIT: No dynamic memory allocation. Perfect for small temporary strings like stack traces.
  */
 template <size_t Capacity>
 class StaticString {
 public:
-    FORCE_INLINE StaticString() : size_(0) {
-        buffer_[0] = '\0';
-    }
+    FORCE_INLINE StaticString() : size_(0) { buffer_[0] = '\0'; }
 
     FORCE_INLINE StaticString(const char* str) : size_(0) {
         if (LIKELY(str != nullptr)) {
@@ -61,9 +59,7 @@ public:
         return std::strcmp(buffer_, str) == 0;
     }
 
-    FORCE_INLINE bool operator!=(const char* str) const {
-        return !(*this == str);
-    }
+    FORCE_INLINE bool operator!=(const char* str) const { return !(*this == str); }
 
     template <size_t OtherCap>
     FORCE_INLINE bool operator==(const StaticString<OtherCap>& other) const {
@@ -76,13 +72,9 @@ public:
         return !(*this == other);
     }
 
-    FORCE_INLINE char& operator[](size_t index) {
-        return buffer_[index];
-    }
+    FORCE_INLINE char& operator[](size_t index) { return buffer_[index]; }
 
-    FORCE_INLINE const char& operator[](size_t index) const {
-        return buffer_[index];
-    }
+    FORCE_INLINE const char& operator[](size_t index) const { return buffer_[index]; }
 
     FORCE_INLINE void clear() {
         size_ = 0;
@@ -99,4 +91,4 @@ private:
     size_t size_;
 };
 
-} // namespace uniuno
+}  // namespace uniuno

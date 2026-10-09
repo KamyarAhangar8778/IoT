@@ -24,34 +24,27 @@ public:
     String exportStateJson() const;
 
     // --- State Delegation ---
-    HOT_PATH FORCE_INLINE bool setPinState(int pin, bool state) {
-        return _stateManager.setPinState(pin, state);
-    }
-    
+    HOT_PATH FORCE_INLINE bool setPinState(int pin, bool state) { return _stateManager.setPinState(pin, state); }
+
     HOT_PATH FORCE_INLINE bool setStateById(const char* id, bool state) {
         return _stateManager.setStateById(id, state);
     }
-    
-    HOT_PATH FORCE_INLINE bool getPinState(int pin) const {
-        return _stateManager.getPinState(pin);
-    }
 
-    HOT_PATH FORCE_INLINE void processInputs(const std::function<void(int, bool, unsigned long, const RuleConfig&)>& onInputChanged) {
+    HOT_PATH FORCE_INLINE bool getPinState(int pin) const { return _stateManager.getPinState(pin); }
+
+    HOT_PATH FORCE_INLINE void processInputs(
+        const std::function<void(int, bool, unsigned long, const RuleConfig&)>& onInputChanged) {
         _stateManager.processInputs(onInputChanged);
     }
 
-    HOT_PATH FORCE_INLINE RuleConfig getRuleByPin(int pin) const {
-        return _stateManager.getRuleByPin(pin);
-    }
+    HOT_PATH FORCE_INLINE RuleConfig getRuleByPin(int pin) const { return _stateManager.getRuleByPin(pin); }
 
-    HOT_PATH FORCE_INLINE bool getIsHandledByPin(int pin) const {
-        return _stateManager.getIsHandledByPin(pin);
-    }
+    HOT_PATH FORCE_INLINE bool getIsHandledByPin(int pin) const { return _stateManager.getIsHandledByPin(pin); }
 
     HOT_PATH FORCE_INLINE void setIsHandledByPin(int pin, bool handled) {
         _stateManager.setIsHandledByPin(pin, handled);
     }
-    
+
     HOT_PATH FORCE_INLINE bool getPendingRuleActionState(int pin) const {
         return _stateManager.getPendingRuleActionState(pin);
     }
@@ -59,7 +52,7 @@ public:
     HOT_PATH FORCE_INLINE void setPendingRuleActionState(int pin, bool state) {
         _stateManager.setPendingRuleActionState(pin, state);
     }
-    
+
     HOT_PATH FORCE_INLINE RuleAction getPendingHoldAction(int pin) const {
         return _stateManager.getPendingHoldAction(pin);
     }
@@ -69,14 +62,12 @@ public:
     }
 
     // --- Timer Delegation ---
-    HOT_PATH FORCE_INLINE int getAutoOffDelayByPin(int pin) const {
-        return _timerManager.getAutoOffDelayByPin(pin);
-    }
+    HOT_PATH FORCE_INLINE int getAutoOffDelayByPin(int pin) const { return _timerManager.getAutoOffDelayByPin(pin); }
 
     HOT_PATH FORCE_INLINE void setAutoOffDelayByPin(int pin, int delay) {
         _timerManager.setAutoOffDelayByPin(pin, delay);
     }
-    
+
     HOT_PATH FORCE_INLINE uniuno::TimerHandle getTimerIdByPin(int pin) const {
         return _timerManager.getTimerIdByPin(pin);
     }
@@ -84,7 +75,7 @@ public:
     HOT_PATH FORCE_INLINE void setTimerIdByPin(int pin, uniuno::TimerHandle timer) {
         _timerManager.setTimerIdByPin(pin, timer);
     }
-    
+
     HOT_PATH FORCE_INLINE uniuno::TimerHandle getCloudSyncTimerIdByPin(int pin) const {
         return _timerManager.getCloudSyncTimerIdByPin(pin);
     }
@@ -92,7 +83,7 @@ public:
     HOT_PATH FORCE_INLINE void setCloudSyncTimerIdByPin(int pin, uniuno::TimerHandle timer) {
         _timerManager.setCloudSyncTimerIdByPin(pin, timer);
     }
-    
+
     HOT_PATH FORCE_INLINE uniuno::TimerHandle getRuleActionTimerIdByPin(int pin) const {
         return _timerManager.getRuleActionTimerIdByPin(pin);
     }
@@ -100,7 +91,7 @@ public:
     HOT_PATH FORCE_INLINE void setRuleActionTimerIdByPin(int pin, uniuno::TimerHandle timer) {
         _timerManager.setRuleActionTimerIdByPin(pin, timer);
     }
-    
+
     HOT_PATH FORCE_INLINE uniuno::TimerHandle getHoldTimerIdByPin(int pin) const {
         return _timerManager.getHoldTimerIdByPin(pin);
     }

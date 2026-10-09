@@ -3,8 +3,7 @@
 namespace uniuno {
 
 AchaemenidWebSocketServer::AchaemenidWebSocketServer(EventDispatcher* dispatcher, std::function<String()> stateProvider)
-    : dispatcher_(dispatcher), stateProvider_(stateProvider) 
-{
+    : dispatcher_(dispatcher), stateProvider_(stateProvider) {
     parser_ = new WsServerParser(dispatcher_, stateProvider_);
 }
 
@@ -30,15 +29,12 @@ void AchaemenidWebSocketServer::loop() {
 
         Serial.printf("[LocalWS] New client connected (slot %d/%d)\n", idx + 1, WS_SERVER_MAX_CLIENTS);
 
-        clients[idx].onMessage([this, idx](websockets::WebsocketsMessage msg) {
-            this->handleMessage(idx, msg);
-        });
-        clients[idx].onEvent([this, idx](websockets::WebsocketsEvent event, String data) {
-            this->handleEvent(idx, event, data);
-        });
+        clients[idx].onMessage([this, idx](websockets::WebsocketsMessage msg) { this->handleMessage(idx, msg); });
+        clients[idx].onEvent(
+            [this, idx](websockets::WebsocketsEvent event, String data) { this->handleEvent(idx, event, data); });
     }
 
-    for (uint8_t i = 0; i < clientCount; ) {
+    for (uint8_t i = 0; i < clientCount;) {
         if (clients[i].available()) {
             clients[i].poll();
             ++i;
@@ -47,12 +43,9 @@ void AchaemenidWebSocketServer::loop() {
             if (i < clientCount - 1) {
                 uint8_t lastIdx = clientCount - 1;
                 clients[i] = std::move(clients[lastIdx]);
-                clients[i].onMessage([this, i](websockets::WebsocketsMessage msg) {
-                    this->handleMessage(i, msg);
-                });
-                clients[i].onEvent([this, i](websockets::WebsocketsEvent event, String data) {
-                    this->handleEvent(i, event, data);
-                });
+                clients[i].onMessage([this, i](websockets::WebsocketsMessage msg) { this->handleMessage(i, msg); });
+                clients[i].onEvent(
+                    [this, i](websockets::WebsocketsEvent event, String data) { this->handleEvent(i, event, data); });
             }
             clientCount--;
         }
@@ -83,4 +76,4 @@ void AchaemenidWebSocketServer::broadcastState(const char* stateJson) {
     }
 }
 
-} // namespace uniuno
+}  // namespace uniuno

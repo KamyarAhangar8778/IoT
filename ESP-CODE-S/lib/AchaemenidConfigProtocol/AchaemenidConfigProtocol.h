@@ -7,7 +7,8 @@ namespace uniuno {
 
 /**
  * @class AchaemenidConfigProtocol
- * @brief پروتکل متنی مقاوم (Robust Key-Value Protocol) برای تبادل تنظیمات بین سرور و سخت‌افزار
+ * @brief پروتکل متنی مقاوم (Robust Key-Value Protocol) برای تبادل تنظیمات بین سرور و
+ * سخت‌افزار
  */
 class AchaemenidConfigProtocol : public IConfigParser {
 public:
@@ -22,6 +23,6 @@ private:
     int parsePinNumber(const char* pinStr);
 };
 
-} // namespace uniuno
+}  // namespace uniuno
 
-#endif // ACHAEMENID_CONFIG_PROTOCOL_H
+#endif  // ACHAEMENID_CONFIG_PROTOCOL_H
