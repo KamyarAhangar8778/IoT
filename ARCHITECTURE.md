@@ -31,7 +31,10 @@ Build entry for firmware: `platformio.ini` (`src_dir = ESP-CODE-S/src`).
 |------|------------|
 | `ESP-CODE-S/` | ESP32 firmware (C++). Main deliverable. See §3. |
 | `DASHBOARD/` | Next.js dashboard frontend (TypeScript/React). See §4. |
-| `docs/` | Human-readable design & protocol docs. See §6. |
+| `docs/` | Human-readable design, tooling & protocol docs. See §5. |
+| `scripts/` | Toolchain automation scripts (`format-esp.sh`, `lint-esp.sh`, `tidy-esp.sh`, `size-esp.sh`). |
+| `.clang-format` | C++ code formatting rules (C++17, 120 cols, 4 spaces indent). |
+| `.clang-tidy` | LLVM static analysis & modern C++ configuration. |
 | `platformio.ini` | Firmware build config: board `esp32dev`, arduino framework, lib deps, include paths. |
 | `GEMINI.md` | Project instructions for agents (read automatically). |
 
@@ -120,6 +123,8 @@ from the hub's config JSON.
 ## 5. `docs/` — Design & Protocol References
 
 - `Architecture.md` / `Project-Description.md` — system architecture, layers, data allocation.
+- `Development-Tools.md` — development toolchain, clang-format, cppcheck, clang-tidy, size profiling.
+- `BENCHMARKS.md` — latency and throughput benchmarks (80.2% overall latency reduction).
 - `dashboard-configurations-protocol.md` — config JSON schema.
 - `websocket-protocol-esp32.md`, `websocket-protocol-keys-events.md` — WS command/event protocol.
 - `Guide-to-using-the-CloudFlare-Storag-API.md` — Cloudflare storage usage.
@@ -135,7 +140,12 @@ from the hub's config JSON.
   for latency per project rules.
 - **Async everywhere:** Dual-core ESP32; a global `Executor` polls WiFi/NTP/config; the main
   `loop()` pumps MQTT, executor, rule engine inputs, and both WebSocket endpoints.
-- **Build:** `platformio.ini` → `C:\Users\KAVEH\.platformio\penv\Scripts\platformio.exe run`.
+- **Build & Quality Toolchain:**
+  - Firmware compilation: `npm run compile:esp` (`pio run -d .`)
+  - Code formatting: `npm run format:esp` / `npm run format:esp:check` (`clang-format`)
+  - Static analysis: `npm run lint:esp` (`cppcheck`) & `npm run tidy:esp` (`clang-tidy`)
+  - Memory & Size Profiler: `npm run size:esp`
+  - Unified health check: `npm run check:esp`
 - **CloudFlare dir** appears in the code-knowledge graph but is **not checked out locally**;
   the dashboard/worker code references it (config, dashboard, pins routes, Durable Object
   alarm manager). Treat it as external until present.
