@@ -41,8 +41,7 @@ FastFunction<R(Args...), Capacity>::FastFunction(const FastFunction& other)
 
 template <typename R, typename... Args, size_t Capacity>
 FastFunction<R(Args...), Capacity>::FastFunction(FastFunction&& other) noexcept
-    : invoker_(other.invoker_), vtable_(other.vtable_) {
-    storage_ = std::move(other.storage_);
+    : storage_(std::move(other.storage_)), invoker_(other.invoker_), vtable_(other.vtable_) {
     other.invoker_ = nullptr;
     other.vtable_ = nullptr;
 }

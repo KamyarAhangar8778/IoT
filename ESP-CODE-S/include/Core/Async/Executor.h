@@ -19,12 +19,11 @@ namespace uniuno {
 template <size_t Capacity = 32>
 class ExecutorBase {
 public:
-    ExecutorBase() {
+    ExecutorBase() : free_count(Capacity), active_count(0) {
         for (size_t i = 0; i < Capacity; i++) {
             this->free_futures[i] = &this->future_pool[i];
+            this->active_futures[i] = nullptr;
         }
-        this->free_count = Capacity;
-        this->active_count = 0;
     }
 
     /**

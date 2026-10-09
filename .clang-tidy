@@ -1,0 +1,13 @@
+---
+Checks: >
+  -*,
+  bugprone-*,
+  -bugprone-narrowing-conversions,
+  -bugprone-easily-swappable-parameters,
+  clang-analyzer-*,
+  performance-*,
+  portability-*
+WarningsAsErrors: ''
+HeaderFilterRegex: 'ESP-CODE-S/(src|include|lib)/.*'
+FormatStyle: file
+...

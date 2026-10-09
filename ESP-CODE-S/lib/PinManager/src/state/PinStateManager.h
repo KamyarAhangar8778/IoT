@@ -7,7 +7,7 @@
 
 class PinStateManager {
 public:
-    PinStateManager(PinRegistry& registry) : _registry(registry), _numInputs(0) {}
+    PinStateManager(PinRegistry& registry) : _registry(registry), _inputIndices{}, _numInputs(0) {}
 
     bool setPinState(int pin, bool state);
     bool setStateById(const char* id, bool state);

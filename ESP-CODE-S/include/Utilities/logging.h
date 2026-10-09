@@ -42,7 +42,7 @@ static const __FlashStringHelper *get_level_name(int level) {
 
 #define LOGF(level, f_, ...)                                                                                           \
     {                                                                                                                  \
-        if (LOG_LEVEL <= level) {                                                                                      \
+        if (LOG_LEVEL <= (level)) {                                                                                    \
             Serial.print(F("["));                                                                                      \
             Serial.print(get_level_name(level));                                                                       \
             Serial.printf_P(PSTR("]::[%s:%d]:"), __FILE__, __LINE__);                                                  \
@@ -52,7 +52,7 @@ static const __FlashStringHelper *get_level_name(int level) {
     }
 #define LOG(level, msg)                                                                                                \
     {                                                                                                                  \
-        if (LOG_LEVEL <= level) {                                                                                      \
+        if (LOG_LEVEL <= (level)) {                                                                                    \
             Serial.print(F("["));                                                                                      \
             Serial.print(get_level_name(level));                                                                       \
             Serial.printf_P(PSTR("]::[%s:%d]:"), __FILE__, __LINE__);                                                  \

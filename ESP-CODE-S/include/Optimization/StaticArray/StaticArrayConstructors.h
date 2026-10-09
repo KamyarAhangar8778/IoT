@@ -5,6 +5,7 @@
 namespace uniuno {
 
 template <typename T, size_t MaxSize>
+// cppcheck-suppress uninitMemberVar
 StaticArray<T, MaxSize>::StaticArray() : ArrayBase(storage_, MaxSize, true) {}
 
 template <typename T, size_t MaxSize>

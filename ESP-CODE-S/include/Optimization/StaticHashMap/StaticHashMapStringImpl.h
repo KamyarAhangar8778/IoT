@@ -31,7 +31,7 @@ inline bool StaticHashMap<const char*, Value, MaxSize, std::hash<const char*>, s
 
     if (idx == MaxSize) return false;
 
-    if (!entries_[idx].occupied) count_++;
+    if (!entries_[idx].occupied) ++count_;
 
     entries_[idx].key_hash = h;
     entries_[idx].value = value;
@@ -64,7 +64,7 @@ inline bool StaticHashMap<const char*, Value, MaxSize, std::hash<const char*>, s
     if (idx == MaxSize) return false;
 
     entries_[idx].occupied = false;
-    count_--;
+    --count_;
     return true;
 }
 

@@ -9,6 +9,7 @@ namespace uniuno {
 // Default constructor
 // ---------------------------------------------------------------------------
 template <typename T, std::size_t N, typename Allocator>
+// cppcheck-suppress uninitMemberVar
 SmallVector<T, N, Allocator>::SmallVector() : ArrayBase(stack_storage_, N, false) {}
 
 // ---------------------------------------------------------------------------
@@ -23,6 +24,7 @@ SmallVector<T, N, Allocator>::~SmallVector() {
 // Copy constructor
 // ---------------------------------------------------------------------------
 template <typename T, std::size_t N, typename Allocator>
+// cppcheck-suppress uninitMemberVar
 SmallVector<T, N, Allocator>::SmallVector(const SmallVector& other) : ArrayBase(stack_storage_, N, false) {
     capacity_ = other.capacity_;
     size_ = other.size_;

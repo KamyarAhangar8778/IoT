@@ -89,7 +89,7 @@ public:
         Serial.printf("[WiFi] Attempting connection to %d candidate network(s)...\n", (int)credentials.size());
 
         // 1. Try WiFiMulti scan & select strongest AP
-        wl_status_t multiStatus = wifiMulti.run(connectTimeoutMs);
+        wl_status_t multiStatus = static_cast<wl_status_t>(wifiMulti.run(connectTimeoutMs));
         if (multiStatus == WL_CONNECTED) {
             Serial.printf("[WiFi] Connected via Multi-AP to '%s' | RSSI: %d dBm | IP: %s\n", WiFi.SSID().c_str(),
                           WiFi.RSSI(), WiFi.localIP().toString().c_str());

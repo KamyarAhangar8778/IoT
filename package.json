@@ -13,6 +13,9 @@
     "format:esp": "bash scripts/format-esp.sh",
     "format:esp:check": "bash scripts/format-esp.sh --check",
     "lint:esp": "bash scripts/lint-esp.sh",
+    "tidy:esp": "bash scripts/tidy-esp.sh",
+    "compile:esp": "pio run -d .",
+    "size:esp": "bash scripts/size-esp.sh",
     "check:esp": "npm run format:esp:check && npm run lint:esp"
   }
 }
