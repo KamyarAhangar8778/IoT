@@ -1,0 +1,6 @@
+{
+  "name": "Achaemenid IoT Dashboard",
+  "description": "An IoT dashboard for ESP32 and MQTT systems with customizable frontend widgets, automations, and controls.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

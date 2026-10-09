@@ -1,0 +1,72 @@
+export interface MonoAnimatedItem {
+  id: string;
+  name: string;
+  iconName: string;
+  animationClass: string;
+}
+
+/**
+ * 1-to-1 Bespoke Animated Monochrome counterpart for every icon in AVAILABLE_ICONS (60 items)
+ */
+export const MONO_ANIMATED_GIFS: MonoAnimatedItem[] = [
+  { id: "mgif:Cpu", name: "پردازنده فعال", iconName: "Cpu", animationClass: "[animation:anim-cpu-pulse_1.8s_ease-in-out_infinite]" },
+  { id: "mgif:Lightbulb", name: "لامپ درخشان", iconName: "Lightbulb", animationClass: "[animation:anim-bulb-flicker_2.2s_ease-in-out_infinite]" },
+  { id: "mgif:Zap", name: "پالس رعد و برق", iconName: "Zap", animationClass: "[animation:anim-zap-strike_1.2s_ease-in-out_infinite]" },
+  { id: "mgif:Power", name: "کلید پاور", iconName: "Power", animationClass: "[animation:anim-power-ring_1.6s_ease-in-out_infinite]" },
+  { id: "mgif:Fan", name: "فن در حال چرخش", iconName: "Fan", animationClass: "[animation:anim-fan-spin_0.8s_linear_infinite]" },
+  { id: "mgif:Droplets", name: "قطرات باران", iconName: "Droplets", animationClass: "[animation:anim-droplets-rain_1.4s_ease-in-out_infinite]" },
+  { id: "mgif:Droplet", name: "قطره تکی آب", iconName: "Droplet", animationClass: "[animation:anim-droplet-bounce_1.5s_ease-in-out_infinite]" },
+  { id: "mgif:Thermometer", name: "سنسور دما", iconName: "Thermometer", animationClass: "[animation:anim-thermo-rise_2s_ease-in-out_infinite]" },
+  { id: "mgif:ThermometerSun", name: "دمای گرمسیری", iconName: "ThermometerSun", animationClass: "[animation:anim-thermo-sun_1.8s_ease-in-out_infinite]" },
+  { id: "mgif:Lock", name: "قفل بسته امن", iconName: "Lock", animationClass: "[animation:anim-lock-secure_2s_ease-in-out_infinite]" },
+  { id: "mgif:Unlock", name: "قفل بازشو", iconName: "Unlock", animationClass: "[animation:anim-unlock-bounce_1.8s_ease-in-out_infinite]" },
+  { id: "mgif:Key", name: "کلید دسترسی", iconName: "Key", animationClass: "[animation:anim-key-turn_2.2s_ease-in-out_infinite]" },
+  { id: "mgif:Shield", name: "سپر ایمنی", iconName: "Shield", animationClass: "[animation:anim-shield-scan_2s_ease-in-out_infinite]" },
+  { id: "mgif:Bell", name: "زنگوله متحرک", iconName: "Bell", animationClass: "[animation:anim-bell-ring_1.4s_ease-in-out_infinite] origin-top" },
+  { id: "mgif:Camera", name: "دوربین شاتری", iconName: "Camera", animationClass: "[animation:anim-camera-shutter_1.8s_ease-in-out_infinite]" },
+  { id: "mgif:Video", name: "دوربین مداربسته", iconName: "Video", animationClass: "[animation:anim-video-rec_3s_ease-in-out_infinite] origin-top" },
+  { id: "mgif:Tv", name: "تلویزیون لامپی", iconName: "Tv", animationClass: "[animation:anim-tv-static_0.6s_steps(2)_infinite]" },
+  { id: "mgif:Monitor", name: "مانیتور سرور", iconName: "Monitor", animationClass: "[animation:anim-monitor-scan_2s_ease-in-out_infinite]" },
+  { id: "mgif:Smartphone", name: "ویبره موبایل", iconName: "Smartphone", animationClass: "[animation:anim-phone-vibrate_1s_ease-in-out_infinite]" },
+  { id: "mgif:Phone", name: "زنگ تلفن", iconName: "Phone", animationClass: "[animation:anim-phone-ring_1.2s_ease-in-out_infinite]" },
+  { id: "mgif:Speaker", name: "بلندگوی بیس", iconName: "Speaker", animationClass: "[animation:anim-speaker-beat_1s_ease-in-out_infinite]" },
+  { id: "mgif:Volume2", name: "امواج صوتی", iconName: "Volume2", animationClass: "[animation:anim-volume-waves_1.2s_ease-in-out_infinite]" },
+  { id: "mgif:Mic", name: "میکروفون استودیو", iconName: "Mic", animationClass: "[animation:anim-mic-wave_1.2s_ease-in-out_infinite]" },
+  { id: "mgif:Music", name: "نت موسیقی متحرک", iconName: "Music", animationClass: "[animation:anim-music-dance_1.6s_ease-in-out_infinite]" },
+  { id: "mgif:Radio", name: "امواج رادیویی", iconName: "Radio", animationClass: "[animation:anim-radio-antenna_1.8s_ease-in-out_infinite]" },
+  { id: "mgif:Airplay", name: "ارسال بی‌سیم", iconName: "Airplay", animationClass: "[animation:anim-airplay-beam_1.5s_ease-in-out_infinite]" },
+  { id: "mgif:Wifi", name: "رادار وای‌فای", iconName: "Wifi", animationClass: "[animation:anim-wifi-broadcast_1.5s_ease-in-out_infinite]" },
+  { id: "mgif:Bluetooth", name: "اتصال بلوتوث", iconName: "Bluetooth", animationClass: "[animation:anim-bluetooth-ping_1.6s_ease-in-out_infinite]" },
+  { id: "mgif:Sun", name: "تابش خورشید", iconName: "Sun", animationClass: "[animation:anim-sun-spin_6s_linear_infinite]" },
+  { id: "mgif:Moon", name: "گهواره ماه", iconName: "Moon", animationClass: "[animation:anim-moon-cradle_2.5s_ease-in-out_infinite]" },
+  { id: "mgif:Cloud", name: "شناوری ابر", iconName: "Cloud", animationClass: "[animation:anim-cloud-drift_3s_ease-in-out_infinite]" },
+  { id: "mgif:Wind", name: "جریان وزش باد", iconName: "Wind", animationClass: "[animation:anim-wind-gust_1.6s_ease-in-out_infinite]" },
+  { id: "mgif:Flame", name: "رقص شعله آتش", iconName: "Flame", animationClass: "[animation:anim-flame-dance_1.4s_ease-in-out_infinite] origin-bottom" },
+  { id: "mgif:Snowflake", name: "بلور برف", iconName: "Snowflake", animationClass: "[animation:anim-snow-spin_5s_linear_infinite]" },
+  { id: "mgif:Waves", name: "امواج دریا", iconName: "Waves", animationClass: "[animation:anim-waves-flow_2s_ease-in-out_infinite]" },
+  { id: "mgif:Sprout", name: "جوانه رشد", iconName: "Sprout", animationClass: "[animation:anim-sprout-nod_2s_ease-in-out_infinite] origin-bottom" },
+  { id: "mgif:Leaf", name: "برگ در باد", iconName: "Leaf", animationClass: "[animation:anim-leaf-flutter_2.2s_ease-in-out_infinite]" },
+  { id: "mgif:Home", name: "گرمای خانه", iconName: "Home", animationClass: "[animation:anim-home-hearth_2s_ease-in-out_infinite]" },
+  { id: "mgif:Car", name: "خودرو در حرکت", iconName: "Car", animationClass: "[animation:anim-car-ride_0.8s_ease-in-out_infinite]" },
+  { id: "mgif:Settings", name: "چرخ‌دنده مکانیکی", iconName: "Settings", animationClass: "[animation:anim-gear-spin_3s_linear_infinite]" },
+  { id: "mgif:Activity", name: "ضربان قلب ECG", iconName: "Activity", animationClass: "[animation:anim-ecg-heartbeat_1.2s_ease-in-out_infinite]" },
+  { id: "mgif:Layers", name: "شناوری لایه‌ها", iconName: "Layers", animationClass: "[animation:anim-layers-stack_2.2s_ease-in-out_infinite]" },
+  { id: "mgif:Battery", name: "شارژ باتری", iconName: "Battery", animationClass: "[animation:anim-battery-charge_1.8s_ease-in-out_infinite]" },
+  { id: "mgif:BatteryFull", name: "شارژ ۱۰۰٪", iconName: "BatteryFull", animationClass: "[animation:anim-battery-full_1.5s_ease-in-out_infinite]" },
+  { id: "mgif:Clock", name: "تیک‌تاک ساعت", iconName: "Clock", animationClass: "[animation:anim-clock-tick_4s_steps(4)_infinite]" },
+  { id: "mgif:Timer", name: "ثانیه‌شمار تایمر", iconName: "Timer", animationClass: "[animation:anim-timer-sweep_3s_linear_infinite]" },
+  { id: "mgif:Eye", name: "پلک زدن چشم", iconName: "Eye", animationClass: "[animation:anim-eye-blink_3.5s_ease-in-out_infinite]" },
+  { id: "mgif:MapPin", name: "پرش لوکیشن", iconName: "MapPin", animationClass: "[animation:anim-pin-drop_1.6s_ease-in-out_infinite] origin-bottom" },
+  { id: "mgif:Book", name: "ورق زدن کتاب", iconName: "Book", animationClass: "[animation:anim-book-flip_2.2s_ease-in-out_infinite]" },
+  { id: "mgif:Coffee", name: "بخار قهوه", iconName: "Coffee", animationClass: "[animation:anim-coffee-steam_1.8s_ease-in-out_infinite]" },
+  { id: "mgif:Server", name: "چراغ سرور", iconName: "Server", animationClass: "[animation:anim-server-rack_1s_ease-in-out_infinite]" },
+  { id: "mgif:Gamepad2", name: "کلید بازی", iconName: "Gamepad2", animationClass: "[animation:anim-gamepad-combo_1.4s_ease-in-out_infinite]" },
+  { id: "mgif:Play", name: "شروع پلی", iconName: "Play", animationClass: "[animation:anim-play-thrust_1.4s_ease-in-out_infinite]" },
+  { id: "mgif:Pause", name: "مکث آرام", iconName: "Pause", animationClass: "[animation:anim-pause-breath_1.8s_ease-in-out_infinite]" },
+  { id: "mgif:Square", name: "توقف ضربه‌ای", iconName: "Square", animationClass: "[animation:anim-square-snap_1.5s_ease-in-out_infinite]" },
+  { id: "mgif:Check", name: "تیک تایید", iconName: "Check", animationClass: "[animation:anim-check-pop_1.6s_ease-in-out_infinite]" },
+  { id: "mgif:RefreshCw", name: "چرخش همگام‌سازی", iconName: "RefreshCw", animationClass: "[animation:anim-refresh-spin_1.2s_linear_infinite]" },
+  { id: "mgif:X", name: "لرزش خطا/حذف", iconName: "X", animationClass: "[animation:anim-x-wiggle_1.2s_ease-in-out_infinite]" },
+  { id: "mgif:Menu", name: "منوی پویا", iconName: "Menu", animationClass: "[animation:anim-menu-morph_2s_ease-in-out_infinite]" },
+  { id: "mgif:Search", name: "رادار جستجو", iconName: "Search", animationClass: "[animation:anim-search-radar_2s_ease-in-out_infinite]" }
+];

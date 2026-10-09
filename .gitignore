@@ -1,0 +1,60 @@
+# PlatformIO / ESP build artefacts
+.pio
+.pioenvs
+.pio Builds
+.vscode/.browse.c_cpp.db*
+.vscode/c_cpp_properties.json
+.vscode/launch.json
+.vscode/ipch
+.vscode/
+
+# Personal memory
+memory/
+
+# Node / web (DASHBOARD)
+node_modules/
+.next/
+out/
+.turbo/
+coverage/
+tsconfig.tsbuildinfo
+.agent
+*.log
+
+# Secrets
+.env*
+!.env.example
+.DS_Store
+
+# ESP-CODE-S specific
+ESP-CODE-S/.vscode/
+ESP-CODE-S/.pio/
+ESP-CODE-S/test/
+
+# CloudFlare specific
+CloudFlare/cloudflare-backend/node_modules/
+CloudFlare/cloudflare-backend/.next/
+CloudFlare/cloudflare-backend/out/
+CloudFlare/cloudflare-backend/.env*
+!CloudFlare/cloudflare-backend/.env.example
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+*.orig
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Build artefacts
+*.bin
+*.elf
+*.map
+*.firmware
+
+# PlatformIO
+.packages
+.platformio

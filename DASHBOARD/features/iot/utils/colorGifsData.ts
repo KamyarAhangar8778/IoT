@@ -1,0 +1,85 @@
+export interface AnimatedItem {
+  id: string;
+  name: string;
+  url: string;
+  emoji?: string;
+  category?: string;
+}
+
+const CDN = "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis";
+
+/**
+ * 1-to-1 Animated Color counterpart for every emoji in SUGGESTED_EMOJIS (70 items)
+ */
+export const COLOR_ANIMATED_GIFS: AnimatedItem[] = [
+  { id: "gif:voltage", name: "رعد و برق", url: `${CDN}/Travel%20and%20places/High%20Voltage.png`, emoji: "⚡" },
+  { id: "gif:rocket", name: "موشک", url: `${CDN}/Travel%20and%20places/Rocket.png`, emoji: "🚀" },
+  { id: "gif:bulb", name: "لامپ", url: `${CDN}/Objects/Light%20Bulb.png`, emoji: "💡" },
+  { id: "gif:moon", name: "ماه", url: `${CDN}/Travel%20and%20places/Crescent%20Moon.png`, emoji: "🌙" },
+  { id: "gif:sun", name: "خورشید", url: `${CDN}/Travel%20and%20places/Sun.png`, emoji: "☀️" },
+  { id: "gif:locked", name: "قفل بسته", url: `${CDN}/Objects/Locked.png`, emoji: "🔒" },
+  { id: "gif:unlocked", name: "قفل باز", url: `${CDN}/Objects/Unlocked.png`, emoji: "🔓" },
+  { id: "gif:music", name: "نت موسیقی", url: `${CDN}/Objects/Musical%20Note.png`, emoji: "🎵" },
+  { id: "gif:clapper", name: "سینما و فیلم", url: `${CDN}/Objects/Clapper%20Board.png`, emoji: "🎬" },
+  { id: "gif:door", name: "درب ورود", url: `${CDN}/Objects/Door.png`, emoji: "🚪" },
+  { id: "gif:shower", name: "دوش حمام", url: `${CDN}/Travel%20and%20places/Shower.png`, emoji: "🚿" },
+  { id: "gif:coffee", name: "قهوه و نوشیدنی", url: `${CDN}/Food/Hot%20Beverage.png`, emoji: "☕" },
+  { id: "gif:snowflake", name: "برف و سرما", url: `${CDN}/Travel%20and%20places/Snowflake.png`, emoji: "❄️" },
+  { id: "gif:fire", name: "آتش و گرما", url: `${CDN}/Travel%20and%20places/Fire.png`, emoji: "🔥" },
+  { id: "gif:dash", name: "باد و سرعت", url: `${CDN}/Travel%20and%20places/Dashing%20Away.png`, emoji: "💨" },
+  { id: "gif:herb", name: "گیاه و برگ", url: `${CDN}/Animals/Herb.png`, emoji: "🌿" },
+  { id: "gif:bell", name: "زنگ هشدار", url: `${CDN}/Objects/Bell.png`, emoji: "🔔" },
+  { id: "gif:zzz", name: "حالت خواب", url: `${CDN}/Smilies/Zzz.png`, emoji: "💤" },
+  { id: "gif:party", name: "جشن و نورپردازی", url: `${CDN}/Activities/Party%20Popper.png`, emoji: "🎉" },
+  { id: "gif:movie_cam", name: "دوربین فیلمبرداری", url: `${CDN}/Objects/Movie%20Camera.png`, emoji: "🎥" },
+  { id: "gif:car", name: "خودرو", url: `${CDN}/Travel%20and%20places/Automobile.png`, emoji: "🚗" },
+  { id: "gif:plug", name: "دوشاخه برق", url: `${CDN}/Objects/Electric%20Plug.png`, emoji: "🔌" },
+  { id: "gif:battery", name: "باتری", url: `${CDN}/Objects/Battery.png`, emoji: "🔋" },
+  { id: "gif:satellite_dish", name: "دیش ماهواره", url: `${CDN}/Travel%20and%20places/Satellite%20Antenna.png`, emoji: "📡" },
+  { id: "gif:flashlight", name: "چراغ‌قوه", url: `${CDN}/Objects/Flashlight.png`, emoji: "🔦" },
+  { id: "gif:phone", name: "گوشی هوشمند", url: `${CDN}/Objects/Mobile%20Phone.png`, emoji: "📱" },
+  { id: "gif:laptop", name: "لپ‌تاپ", url: `${CDN}/Objects/Laptop.png`, emoji: "💻" },
+  { id: "gif:desktop", name: "کامپیوتر", url: `${CDN}/Objects/Desktop%20Computer.png`, emoji: "🖥️" },
+  { id: "gif:printer", name: "پرینتر", url: `${CDN}/Objects/Printer.png`, emoji: "🖨️" },
+  { id: "gif:joystick", name: "جوی‌استیک", url: `${CDN}/Activities/Joystick.png`, emoji: "🕹️" },
+  { id: "gif:game", name: "دسته بازی", url: `${CDN}/Activities/Video%20Game.png`, emoji: "🎮" },
+  { id: "gif:tv", name: "تلویزیون", url: `${CDN}/Objects/Television.png`, emoji: "📺" },
+  { id: "gif:radio", name: "رادیو", url: `${CDN}/Objects/Radio.png`, emoji: "📻" },
+  { id: "gif:mic", name: "میکروفون", url: `${CDN}/Objects/Studio%20Microphone.png`, emoji: "🎙️" },
+  { id: "gif:slider", name: "اسلایدر کنترل", url: `${CDN}/Objects/Level%20Slider.png`, emoji: "🎚️" },
+  { id: "gif:knobs", name: "پنل تنظیمات", url: `${CDN}/Objects/Control%20Knobs.png`, emoji: "🎛️" },
+  { id: "gif:compass", name: "قطب‌نما", url: `${CDN}/Travel%20and%20places/Compass.png`, emoji: "🧭" },
+  { id: "gif:stopwatch", name: "کرنومتر", url: `${CDN}/Travel%20and%20places/Stopwatch.png`, emoji: "⏱️" },
+  { id: "gif:timer", name: "تایمر", url: `${CDN}/Travel%20and%20places/Timer%20Clock.png`, emoji: "⏲️" },
+  { id: "gif:alarm_clock", name: "ساعت زنگ‌دار", url: `${CDN}/Travel%20and%20places/Alarm%20Clock.png`, emoji: "⏰" },
+  { id: "gif:thermometer", name: "دماسنج", url: `${CDN}/Travel%20and%20places/Thermometer.png`, emoji: "🌡️" },
+  { id: "gif:rain_umbrella", name: "چتر و باران", url: `${CDN}/Travel%20and%20places/Umbrella%20with%20Rain%20Drops.png`, emoji: "☔" },
+  { id: "gif:droplet", name: "قطره آب", url: `${CDN}/Travel%20and%20places/Droplet.png`, emoji: "💧" },
+  { id: "gif:waterwave", name: "موج آب", url: `${CDN}/Travel%20and%20places/Water%20Wave.png`, emoji: "🌊" },
+  { id: "gif:wind_face", name: "نسیم و تهویه", url: `${CDN}/Travel%20and%20places/Wind%20Face.png`, emoji: "🌬️" },
+  { id: "gif:cyclone", name: "گردباد و فن", url: `${CDN}/Travel%20and%20places/Cyclone.png`, emoji: "🌀" },
+  { id: "gif:rainbow", name: "رنگین‌کمان نور", url: `${CDN}/Travel%20and%20places/Rainbow.png`, emoji: "🌈" },
+  { id: "gif:star", name: "ستاره", url: `${CDN}/Travel%20and%20places/Star.png`, emoji: "⭐" },
+  { id: "gif:glowing_star", name: "ستاره درخشان", url: `${CDN}/Travel%20and%20places/Glowing%20Star.png`, emoji: "🌟" },
+  { id: "gif:sparkles", name: "اتوماسیون جادویی", url: `${CDN}/Activities/Sparkles.png`, emoji: "✨" },
+  { id: "gif:house", name: "خانه", url: `${CDN}/Travel%20and%20places/House.png`, emoji: "🏠" },
+  { id: "gif:house_garden", name: "خانه ویلایی", url: `${CDN}/Travel%20and%20places/House%20with%20Garden.png`, emoji: "🏡" },
+  { id: "gif:office", name: "ساختمان اداری", url: `${CDN}/Travel%20and%20places/Office%20Building.png`, emoji: "🏢" },
+  { id: "gif:post_office", name: "مرکز پست", url: `${CDN}/Travel%20and%20places/Japanese%20Post%20Office.png`, emoji: "🏣" },
+  { id: "gif:hospital", name: "بیمارستان", url: `${CDN}/Travel%20and%20places/Hospital.png`, emoji: "🏥" },
+  { id: "gif:bank", name: "بانک", url: `${CDN}/Travel%20and%20places/Bank.png`, emoji: "🏦" },
+  { id: "gif:hotel", name: "هتل", url: `${CDN}/Travel%20and%20places/Hotel.png`, emoji: "🏨" },
+  { id: "gif:love_hotel", name: "اتاق شخصی", url: `${CDN}/Travel%20and%20places/Love%20Hotel.png`, emoji: "🏩" },
+  { id: "gif:store", name: "فروشگاه", url: `${CDN}/Travel%20and%20places/Convenience%20Store.png`, emoji: "🏪" },
+  { id: "gif:school", name: "مدرسه", url: `${CDN}/Travel%20and%20places/School.png`, emoji: "🏫" },
+  { id: "gif:couch", name: "مبل و سالن", url: `${CDN}/Objects/Couch%20and%20Lamp.png`, emoji: "🛋️" },
+  { id: "gif:bed", name: "تخت‌خواب", url: `${CDN}/Objects/Bed.png`, emoji: "🛏️" },
+  { id: "gif:bathtub", name: "وان حمام", url: `${CDN}/Travel%20and%20places/Bathtub.png`, emoji: "🛁" },
+  { id: "gif:toilet", name: "سرویس بهداشتی", url: `${CDN}/Travel%20and%20places/Toilet.png`, emoji: "🚽" },
+  { id: "gif:window", name: "پنجره هوشمند", url: `${CDN}/Objects/Window.png`, emoji: "🪟" },
+  { id: "gif:teddy", name: "اتاق کودک", url: `${CDN}/Activities/Teddy%20Bear.png`, emoji: "🧸" },
+  { id: "gif:picture", name: "قاب عکس", url: `${CDN}/Activities/Framed%20Picture.png`, emoji: "🖼️" },
+  { id: "gif:shopping_bags", name: "خرید", url: `${CDN}/Objects/Shopping%20Bags.png`, emoji: "🛍️" },
+  { id: "gif:cart", name: "چرخ خرید", url: `${CDN}/Objects/Shopping%20Cart.png`, emoji: "🛒" },
+  { id: "gif:gift", name: "هدیه و پاداش", url: `${CDN}/Activities/Wrapped%20Gift.png`, emoji: "🎁" }
+];
